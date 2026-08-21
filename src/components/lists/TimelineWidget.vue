@@ -1,3 +1,12 @@
+<!--
+  事件时间轴：左侧圆点+连线，右侧时间/标题/描述。
+
+  Props：
+  - props.title: string
+
+  dataSource.static.data：
+  - items: { time?: string, title?: string, desc?: string }[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

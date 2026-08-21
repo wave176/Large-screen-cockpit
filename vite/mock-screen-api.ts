@@ -1,3 +1,19 @@
+/**
+ * 开发态大屏 Schema 本地 Mock API（Vite 插件）
+ *
+ * 数据落盘：项目根目录 data/screens/{id}.json
+ * 文档结构大致为：{ version, updatedAt, schema }
+ *
+ * 路由约定：
+ * - GET  /api/screens        → { list: [{ id, name, version, updatedAt, canvasWidth, canvasHeight }] }
+ * - POST /api/screens        → body: { schema: { id, name, ... }, version? }，冲突 409
+ * - GET  /api/screens/:id    → 整份文档
+ * - PUT  /api/screens/:id    → body: { schema, version? }，version 在已存在文件上自动 +1
+ *
+ * 安全：id 会过滤非 [a-zA-Z0-9_-]，避免路径穿越。
+ * 生产环境请换成真实后端，本插件仅 configureServer 生效。
+ */
+
 import type { Plugin } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'

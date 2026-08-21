@@ -1,3 +1,12 @@
+<!--
+  图表宿主：封装 vue-echarts，供各 Chart* / ProgressGauge 复用。
+
+  Props：
+  - option: ECharts option 对象（由父组件 computed 生成）
+  - plain?: 为 true 时去掉内边距与深色底框（迷你图等嵌入场景）
+
+  无 dataSource：本组件不读 Schema，只负责渲染与 resize。
+-->
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import VChart from 'vue-echarts'

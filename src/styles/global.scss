@@ -1,3 +1,13 @@
+/**
+ * 全局样式约定（大屏深色主题）
+ *
+ * - 盒模型：全局 border-box
+ * - 页面底色 #020617、正文色 #e2e8f0
+ * - 字体：Inter / 系统 / 中文回退（PingFang、雅黑）
+ * - 滚动条：thin + 青色半透明 thumb（Firefox scrollbar-* + WebKit 伪元素），
+ *   与组件库主色 #38bdf8 一致；各组件内 overflow:auto 区域继承此约定
+ */
+
 *,
 *::before,
 *::after {

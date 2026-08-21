@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 工具栏分辨率控件：预设下拉 + 自定义宽高 Popover。
+ * 改尺寸走 screenStore.setCanvasSize，画布会随之居中并刷新 Moveable。
+ */
 import { ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import {
@@ -15,6 +19,7 @@ import { RESOLUTION_PRESETS } from '@/shared/constants/resolutions'
 const screenStore = useScreenStore()
 const { schema } = storeToRefs(screenStore)
 
+/** 下拉中「自定义」哨兵值，非真实分辨率 */
 const CUSTOM_VALUE = '__custom__'
 const customWidth = ref(schema.value.canvas.width)
 const customHeight = ref(schema.value.canvas.height)
@@ -36,6 +41,7 @@ const currentPreset = ref<string>(
     : CUSTOM_VALUE,
 )
 
+/** schema 尺寸被其它入口改动时，同步下拉与自定义输入框 */
 watch(
   () => [schema.value.canvas.width, schema.value.canvas.height],
   ([width, height]) => {

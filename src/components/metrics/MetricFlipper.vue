@@ -1,3 +1,12 @@
+<!--
+  数字翻牌器：目标值变化时做短动画过渡，按位数补零展示。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string
+  - props.value: number       目标数值
+  - props.digits: number      最少位数（左侧补 0）
+  - props.prefix / suffix: string  前后缀文案
+-->
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

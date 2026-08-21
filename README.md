@@ -2,6 +2,8 @@
 
 基于技术选型文档搭建的前端工程：固定分辨率画布、组件拖拽、图层成组，Schema 驱动渲染。
 
+> **新人接手请先读：[docs/开发交接.md](./docs/开发交接.md)**（数据流、加组件、设计器约定、换后端）。
+
 ## 技术栈
 
 - Vue 3 + TypeScript + Vite
@@ -46,15 +48,18 @@ data/screens/screen-demo.json
 
 ```
 data/screens/          # 大屏 JSON 文档（模拟数据库）
+docs/
+  开发交接.md          # 接手必读
+  技术选型.md          # 选型与演进
 src/
   api/screen.ts        # 前端 API 封装
-  components/          # 图表、装饰、占位组件
-  editor/              # 设计器
+  components/          # 图表、指标、列表、装饰等 + registry
+  editor/              # 设计器（画布 / 侧栏 / 属性）
   runtime/             # 运行时画布
-  store/screen.ts      # Pinia（hydrate / persist）
+  shared/              # 类型、默认 Schema、工具
+  store/screen.ts      # Pinia（hydrate / persist / 选中态）
 vite/
   mock-screen-api.ts   # 开发态模拟后端
-docs/技术选型.md
 ```
 
 ## 后续
@@ -62,4 +67,4 @@ docs/技术选型.md
 - 将 `src/api/screen.ts` 指向真实后端
 - 数据库用 PostgreSQL JSONB / MySQL JSON 存整份 Schema
 
-详细说明见 [docs/技术选型.md](./docs/技术选型.md) §9。
+详细说明见 [docs/技术选型.md](./docs/技术选型.md) §9、[docs/开发交接.md](./docs/开发交接.md)。

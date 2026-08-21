@@ -1,3 +1,13 @@
+<!--
+  迷你趋势图：无坐标轴，适合指标旁嵌套展示。
+
+  Props（经 component: ScreenComponent）：
+  - props.title?: string  有值时显示上方小标题
+  - props.color?: string  折线/面积主色，默认 #38bdf8
+
+  dataSource.static.data：
+  - values: number[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'

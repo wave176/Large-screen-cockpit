@@ -1,3 +1,12 @@
+<!--
+  实时时钟：每秒刷新本地时间。
+
+  Props（经 component: ScreenComponent）：
+  - props.format: string  注册表里有占位（如 YYYY-MM-DD HH:mm:ss），
+    当前实现固定为「年-月-日 时:分:秒」，format 尚未接入解析。
+
+  无 dataSource。
+-->
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

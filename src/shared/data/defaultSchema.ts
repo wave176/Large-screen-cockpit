@@ -1,5 +1,17 @@
+/**
+ * 内置示例大屏 Schema（智慧园区演示）。
+ *
+ * 依赖：`ScreenSchema` 类型。
+ * 用途：
+ * - store 初始值 / hydrate 失败时的回退文档
+ * - 首次无 JSON 文件时由 API 写入 data/screens/
+ *
+ * 注意：改这里会影响「重置大屏」与无文件冷启动内容；正式业务数据以 data/screens/*.json 为准。
+ */
+
 import type { ScreenSchema } from '@/shared/types/schema'
 
+/** 演示用默认大屏：含左右分组、图表、地图占位与视频占位 */
 export const defaultScreenSchema: ScreenSchema = {
   id: 'screen-demo',
   name: '智慧园区大屏（示例）',

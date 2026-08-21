@@ -1,4 +1,15 @@
 <script setup lang="ts">
+/**
+ * 编辑器画布：固定分辨率 board + CSS zoom 预览缩放 + Moveable 交互。
+ *
+ * 结构：viewport（滚动/平移）→ workspace（留白居中）→ zoom（CSS zoom）→ board（真实像素布局）。
+ *
+ * 关键约定：
+ * - 组件布局坐标始终是「未缩放」画布像素；缩放只影响显示，不改 schema。
+ * - 用 CSS `zoom`（而非 transform:scale）缩放，便于 Moveable 的 `:zoom` 与控制框对齐。
+ * - `selectionChromeVisible` 为 false 时隐藏选中描边与 Moveable（属性面板输入聚焦时）。
+ * - 成组/多选拖拽：只给主选中挂 Moveable，其余成员用 inline transform 做预览，松手后写回 schema。
+ */
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import Moveable from 'vue3-moveable'
 import { storeToRefs } from 'pinia'
@@ -28,17 +39,22 @@ interface MoveableResizeEndEvent {
   lastEvent?: MoveableResizeEvent | null
 }
 
+/** 画布四周留白，方便滚到边缘外选中/平移 */
 const PAD = 240
 
 const screenStore = useScreenStore()
-const { schema, selectedIds, editorPreviewScale, primarySelected } = storeToRefs(screenStore)
+const { schema, selectedIds, editorPreviewScale, primarySelected, selectionChromeVisible } =
+  storeToRefs(screenStore)
 
 const moveableRef = ref<InstanceType<typeof Moveable> | null>(null)
 const viewportRef = ref<HTMLElement | null>(null)
 const boardRef = ref<HTMLElement | null>(null)
+/** Moveable 的 target：主选中组件 DOM（锁定时为空） */
 const selectedElement = ref<HTMLElement | null>(null)
+/** 布局回写期间禁止再次选中，避免与 updateRect 竞态 */
 const syncingLayout = ref(false)
 
+/** 空格按下 = 进入「抓手」模式，左键拖视口平移（中键同样可平移） */
 const spacePressed = ref(false)
 const panning = ref(false)
 const panStart = ref({ x: 0, y: 0, scrollLeft: 0, scrollTop: 0 })
@@ -56,6 +72,10 @@ const boardStyle = computed(() => ({
     : undefined,
 }))
 
+/**
+ * 编辑器预览缩放：CSS zoom 改变视觉尺寸，layout 仍按 1:1 像素。
+ * Moveable 需同步传入相同 `:zoom`，否则控制框会与元素错位。
+ */
 const zoomStyle = computed(() => ({
   zoom: String(editorPreviewScale.value),
 }))
@@ -72,6 +92,7 @@ function getElementById(id: string): HTMLElement | null {
   return boardRef.value?.querySelector(`[data-component-id="${id}"]`) as HTMLElement | null
 }
 
+/** 根据主选中 id 刷新 Moveable target；锁定组件不显示控制框 */
 function refreshSelectedElement() {
   const id = primarySelected.value?.id
   if (!id || !boardRef.value || primarySelected.value?.locked) {
@@ -81,10 +102,12 @@ function refreshSelectedElement() {
   selectedElement.value = getElementById(id)
 }
 
+/** 滚动/缩放/选中变化后，强制 Moveable 按当前 DOM 盒模型重算控制框 */
 function updateMoveableRect() {
   moveableRef.value?.moveable?.updateRect()
 }
 
+/** 清除拖拽预览留下的 inline transform，避免与 schema 的 left/top 叠加 */
 function clearInlineTransform(el: HTMLElement | null) {
   if (!el) return
   el.style.transform = ''
@@ -92,6 +115,10 @@ function clearInlineTransform(el: HTMLElement | null) {
   el.removeAttribute('data-y')
 }
 
+/**
+ * 从 Moveable 事件中取出位移（画布像素，未再除以 zoom）。
+ * 拖拽用 translate；缩放伴随位移时优先 drag.translate，否则用 dist。
+ */
 function getTranslate(event?: {
   translate?: number[]
   drag?: { translate?: number[]; dist?: number[] }
@@ -108,6 +135,11 @@ function getTranslate(event?: {
   return [0, 0]
 }
 
+/**
+ * 拖拽过程中的视觉预览：主目标用 Moveable 的 transform；
+ * 同组/多选其它成员手动套相同 translate，实现「成组一起动」的观感。
+ * 此时尚未写 store，松手后由 moveSelectedBy 统一落盘。
+ */
 function applyDragPreview(translate: [number, number], primaryTarget: HTMLElement, transform: string) {
   primaryTarget.style.transform = transform
   const primaryId = primarySelected.value?.id
@@ -126,6 +158,12 @@ function clearAllSelectedTransforms(primaryTarget: HTMLElement) {
   })
 }
 
+/**
+ * 布局已写入 schema、Vue 即将按 left/top 重排后：
+ * 1) 清掉预览 transform，防止与新坐标叠加；
+ * 2) 刷新 Moveable target；
+ * 3) 下一帧 updateRect，避免控制框留在旧位置。
+ */
 async function syncMoveableAfterLayout(target: HTMLElement) {
   await nextTick()
   clearAllSelectedTransforms(target)
@@ -145,6 +183,7 @@ function centerCanvasInViewport() {
   viewport.scrollTop = Math.max(0, (viewport.scrollHeight - viewport.clientHeight) / 2)
 }
 
+/** 视口滚动会改变元素相对屏幕的位置，需同步 Moveable */
 function handleViewportScroll() {
   updateMoveableRect()
 }
@@ -163,6 +202,7 @@ function onKeyUp(event: KeyboardEvent) {
   panning.value = false
 }
 
+/** 中键 或 空格+左键：开始平移视口（改 scroll，不改组件坐标） */
 function handleViewportPointerDown(event: PointerEvent) {
   const isMiddle = event.button === 1
   const isSpaceLeft = event.button === 0 && spacePressed.value
@@ -231,6 +271,7 @@ onUnmounted(() => {
 })
 
 function handleSelect(id: string, event: MouseEvent) {
+  // 同步布局 / 平移中忽略点击，避免误切换选中
   if (syncingLayout.value || spacePressed.value || panning.value) return
   if (!id) {
     screenStore.selectComponent(null)
@@ -250,6 +291,7 @@ function handleDrag(event: MoveableDragEvent) {
   applyDragPreview(getTranslate(event), event.target, event.transform)
 }
 
+/** 松手：把位移写入 schema（含成组成员），再清预览并重绑 Moveable */
 async function handleDragEnd(event: MoveableDragEndEvent) {
   const current = primarySelected.value
   if (!current) return
@@ -272,6 +314,7 @@ function handleResize(event: MoveableResizeEvent) {
   target.style.transform = drag.transform ?? ''
 }
 
+/** 仅单选可缩放；松手后写回 width/height，以及缩放时可能产生的 x/y 偏移 */
 async function handleResizeEnd(event: MoveableResizeEndEvent) {
   const current = primarySelected.value
   if (!current || !event.lastEvent) return
@@ -315,19 +358,24 @@ async function handleResizeEnd(event: MoveableResizeEndEvent) {
             :style="boardStyle"
             @mousedown.self="handleBoardMouseDown"
           >
+            <!-- selectionChromeVisible=false 时隐藏描边，避免与属性面板输入抢视觉焦点 -->
             <ComponentWrapper
               v-for="item in sortedComponents"
               :key="item.id"
               :component="item"
               editable
-              :selected="primarySelected?.id === item.id"
-              :co-selected="screenStore.isCoSelected(item.id)"
-              :highlighted="screenStore.isGroupHighlighted(item.id)"
+              :selected="selectionChromeVisible && primarySelected?.id === item.id"
+              :co-selected="selectionChromeVisible && screenStore.isCoSelected(item.id)"
+              :highlighted="selectionChromeVisible && screenStore.isGroupHighlighted(item.id)"
               @select="handleSelect"
             />
 
+            <!--
+              多选/成组时只对主选中挂 Moveable；resizable 仅单成员时开启。
+              :zoom 必须等于 CSS zoom，bounds 使用未缩放的画布尺寸。
+            -->
             <Moveable
-              v-if="selectedElement && primarySelected && !panning"
+              v-if="selectionChromeVisible && selectedElement && primarySelected && !panning"
               ref="moveableRef"
               class="editor-canvas__moveable"
               :target="selectedElement"

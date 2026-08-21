@@ -1,6 +1,20 @@
+/**
+ * 图层树与 Schema 规范化工具。
+ *
+ * 依赖：
+ * - schema 类型（LayerTreeNode / ScreenSchema 等）
+ * - 组件注册表 getComponentMeta（补齐旧数据缺失字段时的默认名）
+ *
+ * 约定：空组不展示也不应长期留在 Schema 中（由 pruneEmptyGroups 清理）。
+ */
+
 import type { LayerTreeNode, ScreenComponent, ScreenSchema } from '@/shared/types/schema'
 import { getComponentMeta } from '@/components/registry'
 
+/**
+ * 规范化整份 Schema：补 groups、补组件缺省字段，并剔除空组。
+ * 加载远端/本地 JSON 后应先走此函数，再写入 store。
+ */
 export function normalizeSchema(raw: ScreenSchema): ScreenSchema {
   const schema: ScreenSchema = {
     ...raw,
@@ -11,6 +25,10 @@ export function normalizeSchema(raw: ScreenSchema): ScreenSchema {
   return schema
 }
 
+/**
+ * 为旧版/残缺组件补齐图层字段（name / groupId / locked / visible）。
+ * 不改 layout、props、dataSource。
+ */
 export function normalizeComponent(component: ScreenComponent): ScreenComponent {
   const meta = getComponentMeta(component.type)
   return {
@@ -41,6 +59,10 @@ export function sortByLayerOrder(components: ScreenComponent[]): ScreenComponent
   return [...components].sort((a, b) => b.layout.zIndex - a.layout.zIndex)
 }
 
+/**
+ * 构建图层面板树：先输出有子节点的组，再输出未分组组件。
+ * 组内/顶层组件均已按图层顺序（高 z 在前）排列。
+ */
 export function buildLayerTree(schema: ScreenSchema): LayerTreeNode[] {
   const sorted = sortByLayerOrder(schema.components)
   const groupedIds = new Set<string>()
@@ -63,11 +85,15 @@ export function buildLayerTree(schema: ScreenSchema): LayerTreeNode[] {
   return nodes
 }
 
+/** 返回某组下全部成员组件 id（顺序与 components 数组一致，非图层序） */
 export function getGroupMemberIds(schema: ScreenSchema, groupId: string): string[] {
   return schema.components.filter((item) => item.groupId === groupId).map((item) => item.id)
 }
 
-/** 按 zIndex 赋值：orderedIds 顺序为图层列表从上到下（zIndex 从高到低） */
+/**
+ * 按图层列表从上到下的 id 顺序重写 zIndex（顶部最高）。
+ * 拖拽图层排序后调用，保证画布叠放与列表一致。
+ */
 export function reindexZOrders(components: ScreenComponent[], topToBottomIds: string[]): void {
   const idToZ = new Map<string, number>()
   topToBottomIds.forEach((id, index) => {
@@ -82,6 +108,7 @@ export function reindexZOrders(components: ScreenComponent[], topToBottomIds: st
   })
 }
 
+/** 当前 Schema 中组件 id，按图层顺序（高 z → 低 z） */
 export function getOrderedComponentIds(schema: ScreenSchema): string[] {
   return sortByLayerOrder(schema.components).map((item) => item.id)
 }

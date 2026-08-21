@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 首页入口：介绍工程能力，并跳转到设计器 / Runtime。
+ * 无 schema 读写，纯导航页。
+ */
 import { NButton, NCard, NSpace } from 'naive-ui'
 import { useRouter } from 'vue-router'
 

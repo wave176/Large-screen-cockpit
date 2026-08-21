@@ -1,3 +1,12 @@
+<!--
+  指标卡：主数值 + 单位 + 同比/环比。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string
+  - props.value: number
+  - props.unit: string
+  - props.yoy / mom: number  同比、环比百分比（正负决定涨跌色）
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

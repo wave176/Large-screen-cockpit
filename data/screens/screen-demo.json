@@ -1,6 +1,6 @@
 {
-  "version": 156,
-  "updatedAt": "2026-08-21T11:02:24.600Z",
+  "version": 185,
+  "updatedAt": "2026-08-21T12:22:39.710Z",
   "schema": {
     "id": "screen-demo",
     "name": "智慧园区大屏（示例）",
@@ -11,18 +11,7 @@
       "backgroundImage": "",
       "scaleMode": "fit"
     },
-    "groups": [
-      {
-        "id": "group-left",
-        "name": "左侧面板",
-        "collapsed": false
-      },
-      {
-        "id": "group-right",
-        "name": "右侧面板",
-        "collapsed": false
-      }
-    ],
+    "groups": [],
     "components": [
       {
         "id": "title-1",
@@ -44,61 +33,6 @@
           "color": "#e0f2fe",
           "align": "center",
           "fontWeight": 700
-        }
-      },
-      {
-        "id": "border-1",
-        "type": "BorderBox",
-        "name": "左侧边框",
-        "groupId": "group-left",
-        "locked": false,
-        "visible": true,
-        "layout": {
-          "x": 40,
-          "y": 100,
-          "width": 420,
-          "height": 320,
-          "zIndex": 1
-        },
-        "props": {
-          "title": "设备在线率",
-          "variant": 1
-        }
-      },
-      {
-        "id": "chart-bar-1",
-        "type": "ChartBar",
-        "name": "区域设备统计",
-        "groupId": "group-left",
-        "locked": false,
-        "visible": true,
-        "layout": {
-          "x": 56,
-          "y": 160,
-          "width": 388,
-          "height": 240,
-          "zIndex": 2
-        },
-        "props": {
-          "title": "区域设备统计",
-          "theme": "dark"
-        },
-        "dataSource": {
-          "type": "static",
-          "data": {
-            "categories": [
-              "A区",
-              "B区",
-              "C区",
-              "D区"
-            ],
-            "values": [
-              128,
-              96,
-              152,
-              88
-            ]
-          }
         }
       },
       {
@@ -124,7 +58,7 @@
         "id": "border-2",
         "type": "BorderBox",
         "name": "右侧边框",
-        "groupId": "group-right",
+        "groupId": null,
         "locked": false,
         "visible": true,
         "layout": {
@@ -143,7 +77,7 @@
         "id": "chart-line-1",
         "type": "ChartLine",
         "name": "告警趋势图",
-        "groupId": "group-right",
+        "groupId": null,
         "locked": false,
         "visible": true,
         "layout": {
@@ -182,33 +116,15 @@
         }
       },
       {
-        "id": "clock-1",
-        "type": "ClockWidget",
-        "name": "时钟",
-        "groupId": "group-left",
-        "locked": false,
-        "visible": true,
-        "layout": {
-          "x": 40,
-          "y": 440,
-          "width": 420,
-          "height": 80,
-          "zIndex": 2
-        },
-        "props": {
-          "format": "YYYY-MM-DD HH:mm:ss"
-        }
-      },
-      {
         "id": "video-1",
         "type": "VideoPanel",
         "name": "监控窗口",
-        "groupId": "group-right",
+        "groupId": null,
         "locked": false,
         "visible": true,
         "layout": {
-          "x": 1460,
-          "y": 440,
+          "x": 108,
+          "y": 800,
           "width": 420,
           "height": 280,
           "zIndex": 2
@@ -220,48 +136,6 @@
         }
       },
       {
-        "id": "chartpie-mt2u642v-za0gp",
-        "type": "ChartPie",
-        "name": "饼图",
-        "groupId": null,
-        "locked": false,
-        "visible": true,
-        "layout": {
-          "x": 477,
-          "y": 424,
-          "width": 380,
-          "height": 320,
-          "zIndex": 11
-        },
-        "props": {
-          "title": "占比分布",
-          "ring": false
-        },
-        "dataSource": {
-          "type": "static",
-          "data": {
-            "items": [
-              {
-                "name": "A类",
-                "value": 36
-              },
-              {
-                "name": "B类",
-                "value": 28
-              },
-              {
-                "name": "C类",
-                "value": 22
-              },
-              {
-                "name": "D类",
-                "value": 14
-              }
-            ]
-          }
-        }
-      },
-      {
         "id": "chartradar-mt2u68sy-kho6h",
         "type": "ChartRadar",
         "name": "雷达图",
@@ -269,8 +143,8 @@
         "locked": false,
         "visible": true,
         "layout": {
-          "x": 940,
-          "y": 129,
+          "x": 895,
+          "y": 139,
           "width": 400,
           "height": 340,
           "zIndex": 12
@@ -336,8 +210,8 @@
         "locked": false,
         "visible": true,
         "layout": {
-          "x": 92,
-          "y": 613,
+          "x": 163,
+          "y": 616,
           "width": 260,
           "height": 180,
           "zIndex": 14
@@ -391,45 +265,88 @@
         }
       },
       {
-        "id": "chartpie-mt2u8etb-zba3t",
-        "type": "ChartPie",
-        "name": "环形图",
+        "id": "chartradar-mt2uuulf-ikvmc",
+        "type": "ChartRadar",
+        "name": "雷达图",
         "groupId": null,
         "locked": false,
         "visible": true,
         "layout": {
-          "x": 676,
-          "y": 616,
-          "width": 380,
-          "height": 320,
-          "zIndex": 16
+          "x": 1140,
+          "y": 640,
+          "width": 400,
+          "height": 340,
+          "zIndex": 17
         },
         "props": {
-          "title": "环形占比",
-          "ring": true
+          "title": "多维对比"
         },
         "dataSource": {
           "type": "static",
           "data": {
-            "items": [
+            "indicators": [
               {
-                "name": "A类",
-                "value": 36
+                "name": "性能",
+                "max": 100
               },
               {
-                "name": "B类",
-                "value": 28
+                "name": "稳定",
+                "max": 100
               },
               {
-                "name": "C类",
-                "value": 22
+                "name": "安全",
+                "max": 100
               },
               {
-                "name": "D类",
-                "value": 14
+                "name": "体验",
+                "max": 100
+              },
+              {
+                "name": "成本",
+                "max": 100
+              }
+            ],
+            "series": [
+              {
+                "name": "本期",
+                "value": [
+                  80,
+                  72,
+                  90,
+                  68,
+                  75
+                ]
+              },
+              {
+                "name": "上期",
+                "value": [
+                  65,
+                  70,
+                  78,
+                  60,
+                  80
+                ]
               }
             ]
           }
+        }
+      },
+      {
+        "id": "clockwidget-mt2x5i39-i4rpm",
+        "type": "ClockWidget",
+        "name": "撒旦",
+        "groupId": null,
+        "locked": false,
+        "visible": true,
+        "layout": {
+          "x": 71,
+          "y": 61,
+          "width": 320,
+          "height": 72,
+          "zIndex": 18
+        },
+        "props": {
+          "format": "YYYY-MM-DD"
         }
       }
     ]

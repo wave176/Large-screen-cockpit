@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 组件库面板：按 category 展示可添加组件，点击即写入 schema（addComponent）。
+ * 元数据来自 `@/components/registry`，与运行时视图注册表同源。
+ */
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useScreenStore } from '@/store/screen'
@@ -7,6 +11,7 @@ import { categoryLabels, componentMetas } from '@/components/registry'
 const screenStore = useScreenStore()
 const { schema } = storeToRefs(screenStore)
 
+/** 将扁平 meta 列表按 category 分组，供模板按类渲染 */
 const groupedMetas = computed(() => {
   const groups = new Map<string, typeof componentMetas>()
   for (const meta of componentMetas) {

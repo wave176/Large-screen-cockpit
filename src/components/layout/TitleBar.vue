@@ -1,3 +1,10 @@
+<!--
+  大屏顶栏标题：左右渐变线 + 主副标题。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string
+  - props.subtitle?: string
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

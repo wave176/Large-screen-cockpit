@@ -1,3 +1,13 @@
+<!--
+  饼图 / 环形图（由 props.ring 切换）。
+
+  Props（经 component: ScreenComponent）：
+  - props.title: string
+  - props.ring: boolean  true 为环形
+
+  dataSource.static.data：
+  - items: { name: string, value: number }[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'

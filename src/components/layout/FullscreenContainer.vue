@@ -1,3 +1,10 @@
+<!--
+  全屏/分区占位容器：虚线框 + 背景色，默认插槽可嵌子内容。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string         左上角提示文案
+  - props.background: string    CSS background 值
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

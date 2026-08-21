@@ -1,3 +1,10 @@
+<!--
+  纯视觉装饰：线条 / 网格 / 光晕，不承载业务数据。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.mode: 'line' | 'grid' | 'glow'
+  - props.color: string  CSS 色值，驱动 --decor-color
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

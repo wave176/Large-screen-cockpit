@@ -1,3 +1,11 @@
+<!--
+  图例条：色块 + 名称横向排列（当前为展示用，无点击交互）。
+
+  Props：无业务 props（defaultProps 为空）
+
+  dataSource.static.data：
+  - items: { name?: string, color?: string }[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

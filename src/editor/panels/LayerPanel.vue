@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 图层面板：树形展示分组与组件，支持成组/解组、层级上下移、显隐与锁定。
+ * 树结构由 buildLayerTree 从 schema 派生；选中与画布共用 screenStore。
+ */
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { NButton, NInput, NSpace } from 'naive-ui'
@@ -11,10 +15,12 @@ const { schema, selectedIds, selectedGroupId } = storeToRefs(screenStore)
 
 const layerTree = computed(() => buildLayerTree(schema.value))
 
+/** Ctrl/Meta 多选，与画布选中逻辑一致 */
 function handleSelectComponent(id: string, event: MouseEvent) {
   screenStore.selectComponent(id, { append: event.ctrlKey || event.metaKey })
 }
 
+/** 选中整组：store 会把组成员填入 selectedIds */
 function handleSelectGroup(groupId: string) {
   screenStore.selectGroup(groupId)
 }

@@ -1,3 +1,31 @@
+/**
+ * 大屏组件注册表（换人接手必读）
+ *
+ * 职责：
+ * 1. componentViews —— type → Vue 组件，画布/预览按 type 渲染
+ * 2. componentMetas —— 左侧组件面板条目（可含同 type 多 label）
+ * 3. getDefaultDataSource —— 新建实例时注入的静态演示 dataSource
+ * 4. categoryLabels —— 面板分类中文名
+ *
+ * —— 如何注册新组件 ——
+ * 1. 在 src/components/... 实现 Vue 组件，props 约定为 { component: ScreenComponent }
+ * 2. 在本文件 import，并加入 componentViews（key 必须与 meta.type 一致）
+ * 3. 在 componentMetas 增加一条（或多条同 type 不同 label 的入口）
+ * 4. 若新建时需要演示数据，在 getDefaultDataSource 的 switch 中补 case
+ * 5. 若为新 category，同步补 categoryLabels
+ *
+ * —— 同 type 多 label ——
+ * 面板可展示多个入口，共用同一 Vue 组件（同一 type），用 label 区分展示名，
+ * 用 defaultProps 区分变体（如 ChartBar 的 mode、ChartPie 的 ring）。
+ * 落盘到 Schema 的实例仍只存 type；创建时通过 getComponentMeta(type, label)
+ * 取对应 defaultLayout / defaultProps。
+ *
+ * —— getDefaultDataSource ——
+ * 仅在拖入/新建组件时调用；返回 DataSourceConfig（当前多为 type:'static'）。
+ * 部分类型会读 props（如 ChartBar 的 mode==='stack'）决定演示数据结构。
+ * 无数据依赖的组件（Metric*、TitleBar 等）返回 undefined，数值走 props。
+ */
+
 import type { Component } from 'vue'
 import type { ComponentMeta, DataSourceConfig } from '@/shared/types/schema'
 
@@ -28,6 +56,7 @@ import ClockWidget from '@/components/controls/ClockWidget.vue'
 import Map3D from '@/components/map3d/Map3DPlaceholder.vue'
 import VideoPanel from '@/components/video/VideoPanelPlaceholder.vue'
 
+/** type → 实际渲染用的 Vue 组件（与 Schema 中 component.type 一一对应） */
 export const componentViews: Record<string, Component> = {
   ChartBar,
   ChartLine,
@@ -52,6 +81,10 @@ export const componentViews: Record<string, Component> = {
   VideoPanel,
 }
 
+/**
+ * 组件面板元数据列表。
+ * 注意：允许相同 type 出现多条（不同 label / defaultProps），见文件头说明。
+ */
 export const componentMetas: ComponentMeta[] = [
   // —— 基础图表 ——
   {
@@ -275,7 +308,11 @@ export const componentMetas: ComponentMeta[] = [
   },
 ]
 
-/** 面板里同 type 多条目时，按 label 取 meta；创建实例仍用 type */
+/**
+ * 按 type（及可选 label）查找面板元数据。
+ * 有 label 时优先精确匹配「同 type + 同 label」，用于同 type 多入口场景；
+ * 创建到画布上的实例仍用 type 绑定 componentViews。
+ */
 export function getComponentMeta(type: string, label?: string): ComponentMeta | undefined {
   if (label) {
     const byLabel = componentMetas.find((item) => item.type === type && item.label === label)
@@ -284,10 +321,15 @@ export function getComponentMeta(type: string, label?: string): ComponentMeta | 
   return componentMetas.find((item) => item.type === type)
 }
 
+/** 按 Schema.type 取 Vue 组件；找不到则渲染失败（需先注册到 componentViews） */
 export function getComponentView(type: string): Component | undefined {
   return componentViews[type]
 }
 
+/**
+ * 组件分类 → 中文名（左侧面板分组标题）。
+ * 新增 category 时务必在此补一项，否则 UI 可能显示 key 原文。
+ */
 export const categoryLabels: Record<ComponentMeta['category'], string> = {
   charts: '基础图表',
   metrics: '关键指标',
@@ -300,11 +342,13 @@ export const categoryLabels: Record<ComponentMeta['category'], string> = {
   video: '视频',
 }
 
+/** 柱/折线类单系列演示数据：categories + values */
 const categorySeries = {
   categories: ['A', 'B', 'C', 'D'],
   values: [12, 20, 15, 28],
 }
 
+/** 堆叠柱演示数据：categories + 多 series */
 const stackedSeries = {
   categories: ['周一', '周二', '周三', '周四'],
   series: [
@@ -313,7 +357,12 @@ const stackedSeries = {
   ],
 }
 
-/** 新建组件时的静态演示数据 */
+/**
+ * 新建组件时的静态演示 dataSource。
+ * @param type  组件 type（与 componentViews 的 key 一致）
+ * @param props 已合并的 defaultProps（可据此分支，如 ChartBar.mode）
+ * @returns DataSourceConfig | undefined；undefined 表示该组件不依赖 dataSource
+ */
 export function getDefaultDataSource(type: string, props: Record<string, unknown>): DataSourceConfig | undefined {
   switch (type) {
     case 'ChartBar':

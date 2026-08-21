@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 运行时预览页：只读渲染 Schema，用 ScreenCanvas + useScale 做屏幕适配。
+ * 与设计器共享同一 screenStore；可在此切换 scaleMode 后返回设计器。
+ */
 import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { NButton, NSelect, NSpace, NTag } from 'naive-ui'

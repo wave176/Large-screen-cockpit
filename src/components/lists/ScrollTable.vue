@@ -1,3 +1,12 @@
+<!--
+  滚动排行表：行列表无缝向上滚动（CSS 动画，内容复制一份以实现循环）。
+
+  Props：
+  - props.title: string
+
+  dataSource.static.data：
+  - rows: { rank?: number, name?: string, value?: string | number }[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

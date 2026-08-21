@@ -1,3 +1,17 @@
+<!--
+  明细表：名称 / 状态灯 / 进度条 / 结果文案。
+
+  Props：
+  - props.title: string
+
+  dataSource.static.data：
+  - rows: {
+      name?: string
+      status?: 'normal' | 'warn' | 'error'
+      progress?: number   0–100，进度条宽度
+      value?: string | number
+    }[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

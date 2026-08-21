@@ -1,4 +1,9 @@
 <script setup lang="ts">
+/**
+ * 单个大屏组件外壳：绝对定位 + 按 type 解析视图组件。
+ * 编辑器与运行时共用；editable 时拦截内部点击、支持选中态描边。
+ * 编辑模式下 rotate 不在此应用（由 Moveable/预览 transform 管），运行时才写 rotate。
+ */
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
 import { getComponentView } from '@/components/registry'
@@ -31,6 +36,7 @@ const wrapperStyle = computed(() => ({
       ? `rotate(${props.component.layout.rotate}deg)`
       : undefined,
   visibility: props.component.visible ? 'visible' : 'hidden',
+  // 隐藏或（编辑态下）锁定：不接收指针，避免挡住下层选中
   pointerEvents: props.component.visible
     ? props.component.locked && props.editable
       ? 'none'

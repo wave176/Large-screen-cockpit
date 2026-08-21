@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 设计器页面：顶栏工具 + 左侧栏 + 中央 EditorCanvas + 可开关浮层属性面板。
+ * 负责 hydrate 文档、保存状态展示、预览缩放/适配模式与跳转 Runtime。
+ */
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import {
@@ -28,6 +32,7 @@ const {
   hydrated,
 } = storeToRefs(screenStore)
 
+/** 写入 schema.canvas.scaleMode，影响 Runtime 适配，不改变编辑器 CSS zoom */
 const scaleModeOptions = [
   { label: '等比适应 (fit)', value: 'fit' },
   { label: '等比铺满 (fill)', value: 'fill' },
@@ -35,6 +40,7 @@ const scaleModeOptions = [
   { label: '原尺寸 (none)', value: 'none' },
 ]
 
+/** 编辑器预览缩放百分比，对应 EditorCanvas 的 CSS zoom */
 const previewScaleOptions = EDITOR_PREVIEW_SCALES.map((value) => ({
   label: `${Math.round(value * 100)}%`,
   value,
@@ -63,6 +69,7 @@ const saveStatusType = computed(() => {
 })
 
 onMounted(() => {
+  // 直接进 /editor 时补一次 hydrate，避免空 schema
   if (!hydrated.value) {
     void screenStore.hydrate()
   }

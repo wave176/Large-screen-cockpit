@@ -1,3 +1,11 @@
+<!--
+  视频监控面板占位（后续可接 hls.js / WebRTC；registry type 为 VideoPanel）。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string
+  - props.layout?: string      如 '1x1'，当前 UI 未消费，保留给多宫格扩展
+  - props.placeholder: string  画面中央提示文案
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

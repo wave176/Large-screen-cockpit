@@ -1,4 +1,8 @@
 <script setup lang="ts">
+/**
+ * 编辑器左侧栏：Tabs 切换「组件库」与「图层」两个子面板。
+ * 本身无业务状态，仅作布局容器。
+ */
 import { NTabs, NTabPane } from 'naive-ui'
 import ComponentPanel from '@/editor/panels/ComponentPanel.vue'
 import LayerPanel from '@/editor/panels/LayerPanel.vue'

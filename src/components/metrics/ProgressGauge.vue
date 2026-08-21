@@ -1,3 +1,12 @@
+<!--
+  进度环 / 水位半环（ECharts gauge）。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string
+  - props.value: number   0–100
+  - props.mode: 'ring' | 'water'
+    ring  = 满环进度；water = 半环（0°–180°）示意水位
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'

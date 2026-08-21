@@ -1,4 +1,11 @@
 <script setup lang="ts">
+/**
+ * 属性面板：编辑当前主选中组件的名称、布局与 props。
+ * 支持浮层模式（floating，由 EditorView 覆盖在画布右侧）。
+ *
+ * focusin：输入框获得焦点时调用 hideSelectionChrome，隐藏画布上的
+ * Moveable/选中描边，避免控制框遮挡或干扰键盘编辑；重新点选组件会再显示。
+ */
 import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { NButton } from 'naive-ui'
@@ -41,10 +48,27 @@ function updateProp(key: string, value: string | number) {
   if (!selectedComponent.value) return
   screenStore.updateComponentProps(selectedComponent.value.id, { [key]: value })
 }
+
+/**
+ * 属性区表单聚焦时隐藏选中框（selectionChromeVisible=false）。
+ * 用 focusin 冒泡，无需给每个 input 单独绑 focus。
+ */
+function handlePanelFocusIn(event: FocusEvent) {
+  const target = event.target as HTMLElement | null
+  if (!target) return
+  const tag = target.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+    screenStore.hideSelectionChrome()
+  }
+}
 </script>
 
 <template>
-  <div class="property-panel" :class="{ 'property-panel--floating': floating }">
+  <div
+    class="property-panel"
+    :class="{ 'property-panel--floating': floating }"
+    @focusin="handlePanelFocusIn"
+  >
     <div class="property-panel__header">
       <div>
         <h3>属性</h3>

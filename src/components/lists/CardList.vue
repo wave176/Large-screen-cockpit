@@ -1,3 +1,12 @@
+<!--
+  卡片列表：两列网格展示摘要指标。
+
+  Props：
+  - props.title: string
+
+  dataSource.static.data：
+  - items: { title?: string, value?: string | number, tag?: string }[]
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

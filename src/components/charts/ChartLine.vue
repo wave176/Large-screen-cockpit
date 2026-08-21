@@ -1,3 +1,14 @@
+<!--
+  折线图（平滑 + 浅色面积）。
+
+  Props（经 component: ScreenComponent）：
+  - props.title: string
+
+  dataSource.static.data（CategorySeriesData）：
+  - categories: string[]
+  - values?: number[]           单系列
+  - series?: { name, data }[]   多系列
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'

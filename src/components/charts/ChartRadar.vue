@@ -1,3 +1,13 @@
+<!--
+  雷达图：多维指标对比。
+
+  Props（经 component: ScreenComponent）：
+  - props.title: string
+
+  dataSource.static.data：
+  - indicators: { name: string, max?: number }[]
+  - series: { name?: string, value?: number[] }[]  value 长度应与 indicators 对齐
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'

@@ -1,3 +1,10 @@
+<!--
+  3D 地图占位（后续可替换为 CesiumJS 实现；registry type 仍为 Map3D）。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title: string
+  - props.hint: string   副文案，如「Cesium 占位」
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

@@ -1,3 +1,16 @@
+<!--
+  柱状图（含纵向 / 横向 / 堆叠三种 mode）。
+
+  Props（经 component: ScreenComponent）：
+  - props.title: string
+  - props.mode: 'vertical' | 'horizontal' | 'stack'
+  - props.color?: string[]  系列色板
+
+  dataSource.static.data（CategorySeriesData）：
+  - categories: string[]
+  - values?: number[]           单系列时用
+  - series?: { name, data }[]   多系列 / 堆叠时用
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'

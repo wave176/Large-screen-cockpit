@@ -1,3 +1,13 @@
+<!--
+  纯文本块：标题/说明等静态文案。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.text: string
+  - props.fontSize: number
+  - props.color: string
+  - props.align: 'left' | 'center' | 'right'
+  - props.fontWeight: number
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'

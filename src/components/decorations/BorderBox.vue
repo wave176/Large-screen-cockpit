@@ -1,3 +1,11 @@
+<!--
+  科技风边框装饰：四角描边 + 可选扫描线；可作面板容器（默认插槽）。
+
+  Props（经 component: ScreenComponent，无 dataSource）：
+  - props.title?: string
+  - props.variant: 1 | 2 | 3   1 蓝、2 绿、3 切角金
+  - props.animated?: boolean   是否显示扫描动画，默认 true
+-->
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
