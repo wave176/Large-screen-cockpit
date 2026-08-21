@@ -1,0 +1,41 @@
+<script setup lang="ts">
+import { NTabs, NTabPane } from 'naive-ui'
+import ComponentPanel from '@/editor/panels/ComponentPanel.vue'
+import LayerPanel from '@/editor/panels/LayerPanel.vue'
+</script>
+
+<template>
+  <div class="left-sidebar">
+    <NTabs type="line" animated class="left-sidebar__tabs">
+      <NTabPane name="components" tab="组件">
+        <ComponentPanel />
+      </NTabPane>
+      <NTabPane name="layers" tab="图层">
+        <LayerPanel />
+      </NTabPane>
+    </NTabs>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.left-sidebar {
+  height: 100%;
+  border-right: 1px solid rgba(148, 163, 184, 0.15);
+  background: #0f172a;
+
+  &__tabs {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    :deep(.n-tabs-nav) {
+      padding: 0 12px;
+    }
+
+    :deep(.n-tab-pane) {
+      height: calc(100vh - 112px);
+      padding: 0 !important;
+    }
+  }
+}
+</style>
