@@ -1,8 +1,7 @@
 /**
  * 图表/组件渲染侧的数据与 props 读取小工具。
  *
- * 依赖：`ScreenComponent`（schema 类型）。
- * 用途：各图表组件从 dataSource.static / props 取值时统一入口，避免散落类型断言。
+ * 动态数据请优先用 `useComponentData`；本文件的 getStaticData 仅作兜底/兼容。
  */
 
 import type { ScreenComponent } from '@/shared/types/schema'

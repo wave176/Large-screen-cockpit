@@ -10,7 +10,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
-import { getPropString, getStaticData } from '@/shared/utils/chartData'
+import { useComponentData } from '@/shared/composables/useComponentData'
+import { getPropString } from '@/shared/utils/chartData'
 
 interface RowItem {
   name?: string
@@ -19,10 +20,11 @@ interface RowItem {
 }
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const title = computed(() => getPropString(props.component, 'title', '滚动排行'))
 const rows = computed(() => {
-  const data = getStaticData<{ rows?: RowItem[] }>(props.component)
+  const data = liveData.value as { rows?: RowItem[] }
   return (
     data.rows ?? [
       { rank: 1, name: 'A区域', value: 1280 },

@@ -1,32 +1,24 @@
-<!--
-  柱状图（含纵向 / 横向 / 堆叠三种 mode）。
-
-  Props（经 component: ScreenComponent）：
-  - props.title: string
-  - props.mode: 'vertical' | 'horizontal' | 'stack'
-  - props.color?: string[]  系列色板
-
-  dataSource.static.data（CategorySeriesData）：
-  - categories: string[]
-  - values?: number[]           单系列时用
-  - series?: { name, data }[]   多系列 / 堆叠时用
--->
 <script setup lang="ts">
+/**
+ * 柱状图（纵向 / 横向 / 堆叠）。
+ * 数据：useComponentData → categories / values / series（支持 static | http | sql）。
+ */
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
+import { useComponentData } from '@/shared/composables/useComponentData'
 import {
   darkAxis,
   getPropString,
-  getStaticData,
   type CategorySeriesData,
 } from '@/shared/utils/chartData'
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const chartOption = computed(() => {
-  const data = getStaticData<CategorySeriesData>(props.component)
-  const mode = getPropString(props.component, 'mode', 'vertical') // vertical | horizontal | stack
+  const data = liveData.value as CategorySeriesData
+  const mode = getPropString(props.component, 'mode', 'vertical')
   const title = getPropString(props.component, 'title', '柱状图')
   const colors = (props.component.props.color as string[] | undefined) ?? [
     '#38bdf8',

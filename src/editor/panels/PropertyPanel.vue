@@ -1,58 +1,135 @@
 <script setup lang="ts">
 /**
- * 属性面板：编辑当前主选中组件的名称、布局与 props。
- * 支持浮层模式（floating，由 EditorView 覆盖在画布右侧）。
+ * 右侧固定属性面板（与左侧组件栏对称）。
  *
- * focusin：输入框获得焦点时调用 hideSelectionChrome，隐藏画布上的
- * Moveable/选中描边，避免控制框遮挡或干扰键盘编辑；重新点选组件会再显示。
+ * Tab「基础配置」：名称、分组、锁定/可见、位置尺寸层级。
+ * Tab「组件配置」：按 type 查 propSchemas 的专属表单。
+ * Tab「数据源」：static / http / sql / websocket 动态取数。
  */
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import { NButton } from 'naive-ui'
+import { NTabPane, NTabs } from 'naive-ui'
 import { useScreenStore } from '@/store/screen'
-
-defineProps<{
-  floating?: boolean
-}>()
-
-const emit = defineEmits<{
-  close: []
-}>()
+import {
+  getPropFieldsForType,
+  type PropFieldDef,
+} from '@/components/propSchemas'
+import { getComponentMeta } from '@/components/registry'
+import DataSourcePanel from '@/editor/panels/DataSourcePanel.vue'
 
 const screenStore = useScreenStore()
-const { selectedComponent, selectedComponents, selectedGroupId, schema } = storeToRefs(screenStore)
+const { selectedComponent, selectedComponents, schema } = storeToRefs(screenStore)
+
+const activeTab = ref<'basic' | 'specific' | 'data'>('basic')
+
+watch(
+  () => selectedComponent.value?.id,
+  () => {
+    activeTab.value = 'basic'
+  },
+)
+
+const typeLabel = computed(() => {
+  const comp = selectedComponent.value
+  if (!comp) return ''
+  return getComponentMeta(comp.type)?.label ?? comp.type
+})
+
+const groupOptions = computed(() => [
+  { label: '未分组', value: '' },
+  ...schema.value.groups.map((g) => ({ label: g.name, value: g.id })),
+])
+
+const specificFields = computed(() => {
+  if (!selectedComponent.value) return [] as PropFieldDef[]
+  return getPropFieldsForType(selectedComponent.value.type)
+})
 
 const layoutFields = computed(() => {
   if (!selectedComponent.value) return []
   const layout = selectedComponent.value.layout
   return [
-    { key: 'x', label: 'X', value: layout.x },
-    { key: 'y', label: 'Y', value: layout.y },
-    { key: 'width', label: '宽', value: layout.width },
-    { key: 'height', label: '高', value: layout.height },
-    { key: 'zIndex', label: '层级', value: layout.zIndex },
-  ] as const
-})
-
-const selectedGroupName = computed(() => {
-  if (!selectedGroupId.value) return null
-  return schema.value.groups.find((item) => item.id === selectedGroupId.value)?.name ?? null
+    { key: 'x' as const, label: 'X', value: layout.x },
+    { key: 'y' as const, label: 'Y', value: layout.y },
+    { key: 'width' as const, label: '宽', value: layout.width },
+    { key: 'height' as const, label: '高', value: layout.height },
+    { key: 'zIndex' as const, label: '层级', value: layout.zIndex },
+  ]
 })
 
 function updateLayout(key: 'x' | 'y' | 'width' | 'height' | 'zIndex', value: number) {
   if (!selectedComponent.value) return
+  if (Number.isNaN(value)) return
   screenStore.updateComponentLayout(selectedComponent.value.id, { [key]: value })
 }
 
-function updateProp(key: string, value: string | number) {
+function setGroup(groupId: string) {
   if (!selectedComponent.value) return
+  screenStore.setComponentGroup(selectedComponent.value.id, groupId || null)
+}
+
+function readFieldValue(field: PropFieldDef): unknown {
+  const comp = selectedComponent.value
+  if (!comp) return ''
+  return comp.props[field.key]
+}
+
+function displayValue(field: PropFieldDef): string {
+  const value = readFieldValue(field)
+  if (field.type === 'json') {
+    try {
+      return JSON.stringify(value ?? (field.key === 'series' ? [] : value), null, 2)
+    } catch {
+      return ''
+    }
+  }
+  if (field.type === 'boolean') return String(Boolean(value))
+  if (value === undefined || value === null) return ''
+  return String(value)
+}
+
+function coercePropValue(field: PropFieldDef, raw: string): unknown {
+  if (field.type === 'number') {
+    const n = Number(raw)
+    return Number.isNaN(n) ? 0 : n
+  }
+  if (field.type === 'boolean') {
+    const text = raw.trim().toLowerCase()
+    return text === 'true' || text === '1' || text === 'yes'
+  }
+  if (field.type === 'json') {
+    return JSON.parse(raw)
+  }
+  if (field.type === 'select') {
+    const opt = field.options?.find((o) => String(o.value) === raw)
+    return opt ? opt.value : raw
+  }
+  return raw
+}
+
+function commitField(field: PropFieldDef, raw: string) {
+  if (!selectedComponent.value) return
+  try {
+    const value = coercePropValue(field, raw)
+    screenStore.updateComponentProps(selectedComponent.value.id, { [field.key]: value })
+  } catch {
+    // JSON 非法时不写入，保持原值
+  }
+}
+
+function commitFallbackProp(key: string, raw: string) {
+  if (!selectedComponent.value) return
+  const prev = selectedComponent.value.props[key]
+  let value: unknown = raw
+  if (typeof prev === 'number') {
+    const n = Number(raw)
+    value = Number.isNaN(n) ? prev : n
+  } else if (typeof prev === 'boolean') {
+    value = raw === 'true' || raw === '1'
+  }
   screenStore.updateComponentProps(selectedComponent.value.id, { [key]: value })
 }
 
-/**
- * 属性区表单聚焦时隐藏选中框（selectionChromeVisible=false）。
- * 用 focusin 冒泡，无需给每个 input 单独绑 focus。
- */
 function handlePanelFocusIn(event: FocusEvent) {
   const target = event.target as HTMLElement | null
   if (!target) return
@@ -64,103 +141,206 @@ function handlePanelFocusIn(event: FocusEvent) {
 </script>
 
 <template>
-  <div
-    class="property-panel"
-    :class="{ 'property-panel--floating': floating }"
-    @focusin="handlePanelFocusIn"
-  >
+  <div class="property-panel" @focusin="handlePanelFocusIn">
     <div class="property-panel__header">
-      <div>
-        <h3>属性</h3>
-        <p v-if="selectedComponents.length > 1">已选 {{ selectedComponents.length }} 个组件</p>
-        <p v-else-if="selectedGroupName">组：{{ selectedGroupName }}</p>
-      </div>
-      <NButton v-if="floating" quaternary size="tiny" @click="emit('close')">收起</NButton>
+      <h3>属性</h3>
+      <p v-if="selectedComponents.length > 1">已选 {{ selectedComponents.length }} 个（编辑主选）</p>
+      <p v-else-if="selectedComponent">{{ typeLabel }} · {{ selectedComponent.name }}</p>
+      <p v-else>未选中组件</p>
     </div>
 
     <div v-if="!selectedComponent" class="property-panel__empty">
-      选中画布或图层中的组件以编辑属性
+      在画布或左侧「图层」中选中组件后，可在此编辑基础布局与组件专属配置。
     </div>
 
-    <template v-else>
-      <section class="property-panel__section">
-        <div class="property-panel__title">基础信息</div>
-        <label class="property-panel__field">
-          <span>图层名称</span>
-          <input
-            :value="selectedComponent.name"
-            @change="screenStore.updateComponentName(selectedComponent.id, ($event.target as HTMLInputElement).value)"
-          />
-        </label>
-        <div class="property-panel__row">
-          <span>类型</span>
-          <strong>{{ selectedComponent.type }}</strong>
-        </div>
-        <div class="property-panel__row">
-          <span>所属组</span>
-          <strong>{{ selectedComponent.groupId ?? '未分组' }}</strong>
-        </div>
-      </section>
+    <NTabs
+      v-else
+      v-model:value="activeTab"
+      type="line"
+      animated
+      class="property-panel__tabs"
+    >
+      <NTabPane name="basic" tab="基础配置">
+        <div class="property-panel__scroll">
+          <section class="property-panel__section">
+            <div class="property-panel__title">标识</div>
+            <label class="property-panel__field">
+              <span>图层名称</span>
+              <input
+                :value="selectedComponent.name"
+                @change="
+                  screenStore.updateComponentName(
+                    selectedComponent.id,
+                    ($event.target as HTMLInputElement).value,
+                  )
+                "
+              />
+            </label>
+            <div class="property-panel__row">
+              <span>组件类型</span>
+              <strong>{{ typeLabel }}</strong>
+            </div>
+            <div class="property-panel__row">
+              <span>类型标识</span>
+              <strong>{{ selectedComponent.type }}</strong>
+            </div>
+            <label class="property-panel__field">
+              <span>所属分组</span>
+              <select
+                :value="selectedComponent.groupId ?? ''"
+                @change="setGroup(($event.target as HTMLSelectElement).value)"
+              >
+                <option v-for="opt in groupOptions" :key="opt.value || 'none'" :value="opt.value">
+                  {{ opt.label }}
+                </option>
+              </select>
+            </label>
+            <label class="property-panel__check">
+              <input
+                type="checkbox"
+                :checked="selectedComponent.locked"
+                @change="screenStore.toggleComponentLocked(selectedComponent.id)"
+              />
+              <span>锁定（不可拖拽）</span>
+            </label>
+            <label class="property-panel__check">
+              <input
+                type="checkbox"
+                :checked="selectedComponent.visible"
+                @change="screenStore.toggleComponentVisible(selectedComponent.id)"
+              />
+              <span>可见</span>
+            </label>
+          </section>
 
-      <section class="property-panel__section">
-        <div class="property-panel__title">布局</div>
-        <label
-          v-for="field in layoutFields"
-          :key="field.key"
-          class="property-panel__field"
-        >
-          <span>{{ field.label }}</span>
-          <input
-            type="number"
-            :value="field.value"
-            :disabled="selectedComponent.locked"
-            @change="updateLayout(field.key, Number(($event.target as HTMLInputElement).value))"
-          />
-        </label>
-      </section>
+          <section class="property-panel__section">
+            <div class="property-panel__title">布局</div>
+            <label
+              v-for="field in layoutFields"
+              :key="field.key"
+              class="property-panel__field"
+            >
+              <span>{{ field.label }}</span>
+              <input
+                type="number"
+                :value="field.value"
+                :disabled="selectedComponent.locked"
+                @change="
+                  updateLayout(field.key, Number(($event.target as HTMLInputElement).value))
+                "
+              />
+            </label>
+          </section>
+        </div>
+      </NTabPane>
 
-      <section class="property-panel__section">
-        <div class="property-panel__title">组件属性</div>
-        <label
-          v-for="(value, key) in selectedComponent.props"
-          :key="key"
-          class="property-panel__field"
-        >
-          <span>{{ key }}</span>
-          <input
-            :value="String(value)"
-            @change="updateProp(String(key), ($event.target as HTMLInputElement).value)"
-          />
-        </label>
-      </section>
-    </template>
+      <NTabPane name="specific" tab="组件配置">
+        <div class="property-panel__scroll">
+          <template v-if="specificFields.length">
+            <section class="property-panel__section">
+              <div class="property-panel__title">{{ typeLabel }} 专属</div>
+              <label
+                v-for="field in specificFields"
+                :key="field.key"
+                class="property-panel__field"
+              >
+                <span>{{ field.label }}</span>
+                <select
+                  v-if="field.type === 'select'"
+                  :value="String(readFieldValue(field) ?? '')"
+                  @change="commitField(field, ($event.target as HTMLSelectElement).value)"
+                >
+                  <option
+                    v-for="opt in field.options"
+                    :key="String(opt.value)"
+                    :value="String(opt.value)"
+                  >
+                    {{ opt.label }}
+                  </option>
+                </select>
+                <textarea
+                  v-else-if="field.type === 'textarea' || field.type === 'json'"
+                  :rows="field.rows ?? 4"
+                  :value="displayValue(field)"
+                  spellcheck="false"
+                  @change="commitField(field, ($event.target as HTMLTextAreaElement).value)"
+                />
+                <input
+                  v-else-if="field.type === 'boolean'"
+                  type="checkbox"
+                  :checked="Boolean(readFieldValue(field))"
+                  @change="
+                    commitField(
+                      field,
+                      String(($event.target as HTMLInputElement).checked),
+                    )
+                  "
+                />
+                <input
+                  v-else-if="field.type === 'color'"
+                  type="color"
+                  :value="String(readFieldValue(field) || '#38bdf8')"
+                  @change="commitField(field, ($event.target as HTMLInputElement).value)"
+                />
+                <input
+                  v-else
+                  :type="field.type === 'number' ? 'number' : 'text'"
+                  :value="displayValue(field)"
+                  @change="commitField(field, ($event.target as HTMLInputElement).value)"
+                />
+                <em v-if="field.tip" class="property-panel__tip">{{ field.tip }}</em>
+              </label>
+            </section>
+          </template>
+
+          <template v-else>
+            <section class="property-panel__section">
+              <div class="property-panel__title">样式与行为</div>
+              <p
+                v-if="selectedComponent.dataSource"
+                class="property-panel__hint"
+              >
+                该组件的数据请在「数据源」Tab 中配置；此处仅保留样式相关属性。
+              </p>
+              <p v-else class="property-panel__hint">该类型尚未登记专属表单，以下为 props 原始键值。</p>
+              <label
+                v-for="(value, key) in selectedComponent.props"
+                :key="String(key)"
+                class="property-panel__field"
+              >
+                <span>{{ key }}</span>
+                <input
+                  :value="String(value)"
+                  @change="
+                    commitFallbackProp(String(key), ($event.target as HTMLInputElement).value)
+                  "
+                />
+              </label>
+            </section>
+          </template>
+        </div>
+      </NTabPane>
+
+      <NTabPane name="data" tab="数据源">
+        <div class="property-panel__scroll">
+          <DataSourcePanel />
+        </div>
+      </NTabPane>
+    </NTabs>
   </div>
 </template>
 
 <style scoped lang="scss">
 .property-panel {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  padding: 16px;
-  overflow: auto;
   background: #0f172a;
-
-  &--floating {
-    height: auto;
-    max-height: calc(100% - 24px);
-    padding: 14px;
-    border: 1px solid rgba(148, 163, 184, 0.18);
-    border-radius: 12px;
-    background: rgba(15, 23, 42, 0.92);
-    backdrop-filter: blur(12px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-  }
+  border-left: 1px solid rgba(148, 163, 184, 0.15);
 
   &__header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 16px;
+    flex: none;
+    padding: 16px 16px 8px;
 
     h3 {
       margin: 0;
@@ -176,9 +356,37 @@ function handlePanelFocusIn(event: FocusEvent) {
   }
 
   &__empty {
+    padding: 16px;
     font-size: 13px;
     color: #64748b;
     line-height: 1.6;
+  }
+
+  &__tabs {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    :deep(.n-tabs-nav) {
+      padding: 0 12px;
+    }
+
+    :deep(.n-tabs-pane-wrapper) {
+      flex: 1;
+      min-height: 0;
+    }
+
+    :deep(.n-tab-pane) {
+      height: calc(100vh - 148px);
+      padding: 0 !important;
+    }
+  }
+
+  &__scroll {
+    height: 100%;
+    padding: 12px 16px 24px;
+    overflow: auto;
   }
 
   &__section + &__section {
@@ -191,6 +399,13 @@ function handlePanelFocusIn(event: FocusEvent) {
     color: #64748b;
   }
 
+  &__hint {
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+
   &__row {
     display: flex;
     justify-content: space-between;
@@ -201,21 +416,40 @@ function handlePanelFocusIn(event: FocusEvent) {
     word-break: break-all;
   }
 
+  &__check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #94a3b8;
+    cursor: pointer;
+
+    input {
+      accent-color: #38bdf8;
+    }
+  }
+
   &__field {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     font-size: 12px;
     color: #94a3b8;
 
-    input {
+    input[type='text'],
+    input[type='number'],
+    input:not([type]),
+    select,
+    textarea {
       padding: 8px 10px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 6px;
       background: #020617;
       color: #e2e8f0;
       outline: none;
+      font: inherit;
 
       &:focus {
         border-color: rgba(56, 189, 248, 0.45);
@@ -226,6 +460,36 @@ function handlePanelFocusIn(event: FocusEvent) {
         cursor: not-allowed;
       }
     }
+
+    textarea {
+      resize: vertical;
+      min-height: 72px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    input[type='checkbox'] {
+      width: 16px;
+      height: 16px;
+      accent-color: #38bdf8;
+    }
+
+    input[type='color'] {
+      height: 36px;
+      padding: 2px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 6px;
+      background: #020617;
+      cursor: pointer;
+    }
+  }
+
+  &__tip {
+    font-style: normal;
+    font-size: 11px;
+    color: #475569;
+    line-height: 1.4;
   }
 }
 </style>

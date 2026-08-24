@@ -1,29 +1,20 @@
-<!--
-  折线图（平滑 + 浅色面积）。
-
-  Props（经 component: ScreenComponent）：
-  - props.title: string
-
-  dataSource.static.data（CategorySeriesData）：
-  - categories: string[]
-  - values?: number[]           单系列
-  - series?: { name, data }[]   多系列
--->
 <script setup lang="ts">
+/** 折线图；数据经 useComponentData（static/http/sql）。 */
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
+import { useComponentData } from '@/shared/composables/useComponentData'
 import {
   darkAxis,
   getPropString,
-  getStaticData,
   type CategorySeriesData,
 } from '@/shared/utils/chartData'
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const chartOption = computed(() => {
-  const data = getStaticData<CategorySeriesData>(props.component)
+  const data = liveData.value as CategorySeriesData
   const title = getPropString(props.component, 'title', '折线图')
   const categories = data.categories ?? ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
   const seriesList =
@@ -56,9 +47,7 @@ const chartOption = computed(() => {
       smooth: true,
       showSymbol: false,
       data: item.data ?? [],
-      areaStyle: {
-        opacity: 0.15,
-      },
+      areaStyle: { opacity: 0.15 },
     })),
   }
 })

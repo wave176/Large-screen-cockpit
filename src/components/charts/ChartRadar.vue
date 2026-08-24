@@ -1,27 +1,19 @@
-<!--
-  雷达图：多维指标对比。
-
-  Props（经 component: ScreenComponent）：
-  - props.title: string
-
-  dataSource.static.data：
-  - indicators: { name: string, max?: number }[]
-  - series: { name?: string, value?: number[] }[]  value 长度应与 indicators 对齐
--->
 <script setup lang="ts">
+/** 雷达图；indicators + series 来自 useComponentData。 */
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
-import { getPropString, getStaticData } from '@/shared/utils/chartData'
+import { useComponentData } from '@/shared/composables/useComponentData'
+import { getPropString } from '@/shared/utils/chartData'
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const chartOption = computed(() => {
-  const data = getStaticData<{
+  const data = liveData.value as {
     indicators?: Array<{ name: string; max?: number }>
     series?: Array<{ name?: string; value?: number[] }>
-  }>(props.component)
-
+  }
   const title = getPropString(props.component, 'title', '雷达图')
   const indicators = data.indicators?.length
     ? data.indicators

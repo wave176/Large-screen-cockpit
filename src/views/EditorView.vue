@@ -1,16 +1,11 @@
 <script setup lang="ts">
 /**
- * 设计器页面：顶栏工具 + 左侧栏 + 中央 EditorCanvas + 可开关浮层属性面板。
- * 负责 hydrate 文档、保存状态展示、预览缩放/适配模式与跳转 Runtime。
+ * 设计器页面：顶栏 + 左栏（组件/图层）+ 中央画布 + 右栏（属性，固定）。
+ * 负责 hydrate、保存状态、预览缩放 / 适配模式与跳转 Runtime。
  */
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import {
-  NButton,
-  NSelect,
-  NSpace,
-  NTag,
-} from 'naive-ui'
+import { NButton, NSelect, NSpace, NTag } from 'naive-ui'
 import { useRouter } from 'vue-router'
 import { useScreenStore } from '@/store/screen'
 import { EDITOR_PREVIEW_SCALES } from '@/shared/constants/resolutions'
@@ -24,7 +19,6 @@ const screenStore = useScreenStore()
 const {
   schema,
   editorPreviewScale,
-  propertyPanelVisible,
   saveStatus,
   saveError,
   documentVersion,
@@ -69,7 +63,6 @@ const saveStatusType = computed(() => {
 })
 
 onMounted(() => {
-  // 直接进 /editor 时补一次 hydrate，避免空 schema
   if (!hydrated.value) {
     void screenStore.hydrate()
   }
@@ -110,12 +103,6 @@ function openPreview() {
         <NButton @click="screenStore.createGroupFromSelection()">成组</NButton>
         <NButton @click="screenStore.removeSelected()">删除选中</NButton>
         <NButton @click="screenStore.resetSchema()">重置示例</NButton>
-        <NButton
-          :type="propertyPanelVisible ? 'primary' : 'default'"
-          @click="propertyPanelVisible = !propertyPanelVisible"
-        >
-          属性面板
-        </NButton>
         <NButton :loading="saveStatus === 'saving'" @click="screenStore.saveNow()">
           保存到 JSON
         </NButton>
@@ -130,13 +117,11 @@ function openPreview() {
 
       <main class="editor-view__workspace">
         <EditorCanvas />
-
-        <Transition name="panel-slide">
-          <aside v-if="propertyPanelVisible" class="editor-view__property-overlay">
-            <PropertyPanel floating @close="propertyPanelVisible = false" />
-          </aside>
-        </Transition>
       </main>
+
+      <aside class="editor-view__right">
+        <PropertyPanel />
+      </aside>
     </div>
   </div>
 </template>
@@ -176,11 +161,13 @@ function openPreview() {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 280px 1fr 300px;
   }
 
-  &__left {
+  &__left,
+  &__right {
     min-height: 0;
+    min-width: 0;
   }
 
   &__workspace {
@@ -189,26 +176,5 @@ function openPreview() {
     min-height: 0;
     overflow: hidden;
   }
-
-  &__property-overlay {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    bottom: 12px;
-    width: 320px;
-    z-index: 30;
-    pointer-events: auto;
-  }
-}
-
-.panel-slide-enter-active,
-.panel-slide-leave-active {
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.panel-slide-enter-from,
-.panel-slide-leave-to {
-  transform: translateX(16px);
-  opacity: 0;
 }
 </style>

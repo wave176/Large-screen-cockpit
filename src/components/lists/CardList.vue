@@ -10,7 +10,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
-import { getPropString, getStaticData } from '@/shared/utils/chartData'
+import { useComponentData } from '@/shared/composables/useComponentData'
+import { getPropString } from '@/shared/utils/chartData'
 
 interface CardItem {
   title?: string
@@ -19,10 +20,11 @@ interface CardItem {
 }
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const title = computed(() => getPropString(props.component, 'title', '卡片列表'))
 const items = computed(() => {
-  const data = getStaticData<{ items?: CardItem[] }>(props.component)
+  const data = liveData.value as { items?: CardItem[] }
   return (
     data.items ?? [
       { title: '在线设备', value: 128, tag: '正常' },

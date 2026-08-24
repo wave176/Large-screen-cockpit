@@ -33,18 +33,46 @@ export interface CanvasConfig {
   scaleMode: ScaleMode
 }
 
-/** 组件数据源类型；当前编辑器以 static 为主，http/websocket 为扩展位 */
-export type DataSourceType = 'static' | 'http' | 'websocket'
+/** 组件数据源类型：static 本地；http 接口；sql 经后端代理；websocket 实时推送 */
+export type DataSourceType = 'static' | 'http' | 'sql' | 'websocket'
 
-/** 组件数据源配置；charts 等通过 data 注入静态序列 */
+/**
+ * 组件数据源配置。
+ * - static：使用 data 字段
+ * - http：请求 url，结果写入运行时缓存（不回写 schema，除非手动「写入静态」）
+ * - sql：把 sql 交给后端 /api/data/sql 执行（浏览器不直连库）
+ * - websocket：订阅 url，推送消息解析为数据
+ */
 export interface DataSourceConfig {
   type: DataSourceType
   method?: 'GET' | 'POST'
   url?: string
-  /** 轮询间隔（ms），仅 http 等动态源有意义 */
+  /** 轮询间隔（ms）；http/sql 动态刷新；0 或不填表示只请求一次 */
   interval?: number
-  /** 字段映射：远端字段名 → 组件期望字段名 */
+  /** JSON 路径，如 data.list 或 result.rows，用于从响应中取出组件所需对象 */
+  dataPath?: string
+  /** 请求头（http） */
+  headers?: Record<string, string>
+  /** POST body 原文（JSON 字符串或普通文本） */
+  body?: string
+  /**
+   * 字段映射：组件字段名 → 远端字段名。
+   * 例：{ categories: 'labels', values: 'nums' }
+   */
   mapping?: Record<string, string>
+  /**
+   * SQL（仅 type=sql）。由后端代理执行；开发态 Mock 按关键字返回演示数据。
+   * 生产环境请改为命名查询 id（sqlId），避免前端拼接任意 SQL。
+   */
+  sql?: string
+  /** 命名查询 id（推荐生产用法），与 sql 二选一 */
+  sqlId?: string
+  /**
+   * 数据处理脚本（JavaScript 函数体）。
+   * 可访问 raw、component；必须 return 最终数据。有脚本时以 return 值为组件数据。
+   */
+  transformScript?: string
+  /** 数据样例 / 动态源失败时的兜底 */
   data?: unknown
 }
 

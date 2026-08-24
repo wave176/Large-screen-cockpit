@@ -1,36 +1,30 @@
-<!--
-  饼图 / 环形图（由 props.ring 切换）。
-
-  Props（经 component: ScreenComponent）：
-  - props.title: string
-  - props.ring: boolean  true 为环形
-
-  dataSource.static.data：
-  - items: { name: string, value: number }[]
--->
 <script setup lang="ts">
+/** 饼图/环形图；items 来自 useComponentData。 */
 import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
+import { useComponentData } from '@/shared/composables/useComponentData'
 import {
   getPropBoolean,
   getPropString,
-  getStaticData,
   type NameValueItem,
 } from '@/shared/utils/chartData'
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const chartOption = computed(() => {
-  const raw = getStaticData<{ items?: NameValueItem[] }>(props.component)
+  const raw = liveData.value as { items?: NameValueItem[] }
   const title = getPropString(props.component, 'title', '饼图')
   const ring = getPropBoolean(props.component, 'ring', false)
-  const items = (raw.items?.length ? raw.items : null) ?? [
-    { name: 'A类', value: 36 },
-    { name: 'B类', value: 28 },
-    { name: 'C类', value: 22 },
-    { name: 'D类', value: 14 },
-  ]
+  const items = raw.items?.length
+    ? raw.items
+    : [
+        { name: 'A类', value: 36 },
+        { name: 'B类', value: 28 },
+        { name: 'C类', value: 22 },
+        { name: 'D类', value: 14 },
+      ]
 
   return {
     backgroundColor: 'transparent',
@@ -43,10 +37,7 @@ const chartOption = computed(() => {
       textStyle: { color: '#94a3b8', fontSize: 14 },
     },
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
-    legend: {
-      bottom: 0,
-      textStyle: { color: '#94a3b8' },
-    },
+    legend: { bottom: 0, textStyle: { color: '#94a3b8' } },
     series: [
       {
         type: 'pie',

@@ -12,9 +12,10 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { mockScreenApiPlugin } from './vite/mock-screen-api'
+import { mockDataApiPlugin } from './vite/mock-data-api'
 
 export default defineConfig({
-  plugins: [vue(), mockScreenApiPlugin()],
+  plugins: [vue(), mockScreenApiPlugin(), mockDataApiPlugin()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

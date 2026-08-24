@@ -20,7 +20,12 @@
 
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { ComponentLayout, ScreenComponent, ScreenSchema } from '@/shared/types/schema'
+import type {
+  ComponentLayout,
+  DataSourceConfig,
+  ScreenComponent,
+  ScreenSchema,
+} from '@/shared/types/schema'
 import { defaultScreenSchema } from '@/shared/data/defaultSchema'
 import { createId } from '@/shared/utils/calcScale'
 import {
@@ -65,6 +70,8 @@ export const useScreenStore = defineStore('screen', () => {
   const saveError = ref<string | null>(null)
   /** hydrate 完成前禁止 persist，避免用默认 Schema 覆盖远端文件 */
   const hydrated = ref(false)
+  /** 手动触发组件重新拉取/解析数据源（如「测试拉取」后同步画布） */
+  const dataSourceRefreshKeys = ref<Record<string, number>>({})
 
   let saveTimer: ReturnType<typeof setTimeout> | undefined
   /** 保存序号：丢弃过期的 saveNow 响应，防止乱序回写 */
@@ -290,6 +297,59 @@ export const useScreenStore = defineStore('screen', () => {
     persist()
   }
 
+  /** 合并写入 dataSource.data（图表/列表静态数据）；无 dataSource 时自动补 static */
+  function updateComponentData(
+    id: string,
+    patch: Record<string, unknown>,
+  ) {
+    const target = schema.value.components.find((item) => item.id === id)
+    if (!target) return
+    const prev =
+      target.dataSource?.data && typeof target.dataSource.data === 'object'
+        ? (target.dataSource.data as Record<string, unknown>)
+        : {}
+    target.dataSource = {
+      type: target.dataSource?.type ?? 'static',
+      ...target.dataSource,
+      data: { ...prev, ...patch },
+    }
+    persist()
+  }
+
+  /** 整体替换/合并 dataSource 配置（类型、url、sql、interval 等） */
+  function updateComponentDataSource(id: string, patch: Partial<DataSourceConfig>) {
+    const target = schema.value.components.find((item) => item.id === id)
+    if (!target) return
+    const prev = target.dataSource ?? { type: 'static' as const }
+    target.dataSource = {
+      ...prev,
+      ...patch,
+      data: patch.data !== undefined ? patch.data : prev.data,
+    }
+    persist()
+  }
+
+  /** 通知画布上该组件重新解析/拉取数据源 */
+  function refreshComponentData(id: string) {
+    dataSourceRefreshKeys.value = {
+      ...dataSourceRefreshKeys.value,
+      [id]: (dataSourceRefreshKeys.value[id] ?? 0) + 1,
+    }
+  }
+
+  /** 调整组件所属分组；groupId=null 表示移出组 */
+  function setComponentGroup(id: string, groupId: string | null) {
+    const target = schema.value.components.find((item) => item.id === id)
+    if (!target) return
+    if (groupId && !schema.value.groups.some((g) => g.id === groupId)) return
+    target.groupId = groupId
+    if (selectedIds.value.includes(id)) {
+      selectedGroupId.value = groupId
+    }
+    pruneEmptyGroups()
+    persist()
+  }
+
   function updateComponentName(id: string, name: string) {
     const target = schema.value.components.find((item) => item.id === id)
     if (!target) return
@@ -492,6 +552,7 @@ export const useScreenStore = defineStore('screen', () => {
     saveStatus,
     saveError,
     hydrated,
+    dataSourceRefreshKeys,
     selectedComponent,
     selectedComponents,
     primarySelected,
@@ -511,6 +572,10 @@ export const useScreenStore = defineStore('screen', () => {
     updateComponentLayout,
     moveSelectedBy,
     updateComponentProps,
+    updateComponentData,
+    updateComponentDataSource,
+    refreshComponentData,
+    setComponentGroup,
     updateComponentName,
     addComponent,
     removeSelected,

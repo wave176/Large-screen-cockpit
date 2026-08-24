@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
-import { getStaticData } from '@/shared/utils/chartData'
+import { useComponentData } from '@/shared/composables/useComponentData'
 
 interface LegendItem {
   name?: string
@@ -17,9 +17,10 @@ interface LegendItem {
 }
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const items = computed(() => {
-  const data = getStaticData<{ items?: LegendItem[] }>(props.component)
+  const data = liveData.value as { items?: LegendItem[] }
   return (
     data.items ?? [
       { name: '在线', color: '#63e2b7' },

@@ -15,7 +15,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
-import { getPropString, getStaticData } from '@/shared/utils/chartData'
+import { useComponentData } from '@/shared/composables/useComponentData'
+import { getPropString } from '@/shared/utils/chartData'
 
 interface DetailRow {
   name?: string
@@ -25,10 +26,11 @@ interface DetailRow {
 }
 
 const props = defineProps<{ component: ScreenComponent }>()
+const { data: liveData } = useComponentData(() => props.component)
 
 const title = computed(() => getPropString(props.component, 'title', '明细表'))
 const rows = computed(() => {
-  const data = getStaticData<{ rows?: DetailRow[] }>(props.component)
+  const data = liveData.value as { rows?: DetailRow[] }
   return (
     data.rows ?? [
       { name: '设备-01', status: 'normal', progress: 86, value: '在线' },
