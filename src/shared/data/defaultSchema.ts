@@ -10,6 +10,7 @@
  */
 
 import type { ScreenSchema } from '@/shared/types/schema'
+import { colors } from '@/shared/theme/colors'
 
 /** 演示用默认大屏：含左右分组、图表、地图占位与视频占位 */
 export const defaultScreenSchema: ScreenSchema = {
@@ -18,7 +19,7 @@ export const defaultScreenSchema: ScreenSchema = {
   canvas: {
     width: 1920,
     height: 1080,
-    background: '#0d1b2a',
+    background: colors.bgDeep,
     backgroundImage: '',
     scaleMode: 'fit',
   },
@@ -38,7 +39,7 @@ export const defaultScreenSchema: ScreenSchema = {
       props: {
         text: '智慧园区可视化大屏',
         fontSize: 36,
-        color: '#e0f2fe',
+        color: colors.textHighlight,
         align: 'center',
         fontWeight: 700,
       },

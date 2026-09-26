@@ -132,7 +132,7 @@ function openPreview() {
   flex-direction: column;
   width: 100%;
   height: 100vh;
-  background: #020617;
+  background: var(--dp-bg-page);
 
   &__toolbar {
     display: flex;
@@ -140,21 +140,21 @@ function openPreview() {
     justify-content: space-between;
     gap: 16px;
     padding: 12px 16px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-    background: #0f172a;
+    border-bottom: 1px solid var(--dp-border);
+    background: var(--dp-bg-panel);
   }
 
   &__title {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
     flex-shrink: 0;
   }
 
   &__meta {
     font-size: 11px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 
   &__body {

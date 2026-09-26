@@ -5,6 +5,7 @@
  */
 
 import type { ScreenComponent } from '@/shared/types/schema'
+import { colors } from '@/shared/theme/colors'
 
 /** 柱状/折线等「类目 + 数值」静态数据结构 */
 export interface CategorySeriesData {
@@ -53,11 +54,11 @@ export function getPropBoolean(component: ScreenComponent, key: string, fallback
 }
 
 /** ECharts 暗色主题共用文字样式 */
-export const chartTextStyle = { color: '#94a3b8', fontSize: 12 }
+export const chartTextStyle = { color: colors.textMuted, fontSize: 12 }
 
 /** ECharts 暗色坐标轴/分割线样式，供多图表复用 */
 export const darkAxis = {
-  axisLabel: { color: '#94a3b8' },
-  axisLine: { lineStyle: { color: '#334155' } },
-  splitLine: { lineStyle: { color: '#1e293b' } },
+  axisLabel: { color: colors.textMuted },
+  axisLine: { lineStyle: { color: colors.axis } },
+  splitLine: { lineStyle: { color: colors.split } },
 }

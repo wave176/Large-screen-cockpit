@@ -16,6 +16,7 @@ import {
 } from '@/components/propSchemas'
 import { getComponentMeta } from '@/components/registry'
 import DataSourcePanel from '@/editor/panels/DataSourcePanel.vue'
+import { colors } from '@/shared/theme/colors'
 
 const screenStore = useScreenStore()
 const { selectedComponent, selectedComponents, schema } = storeToRefs(screenStore)
@@ -72,6 +73,14 @@ function readFieldValue(field: PropFieldDef): unknown {
   const comp = selectedComponent.value
   if (!comp) return ''
   return comp.props[field.key]
+}
+
+/** select 缺省值：未写入过的 props 显示选项默认值，避免空白 */
+function selectDisplayValue(field: PropFieldDef): string {
+  const value = readFieldValue(field)
+  if (value !== undefined && value !== null && value !== '') return String(value)
+  if (field.options?.length) return String(field.options[0].value)
+  return ''
 }
 
 function displayValue(field: PropFieldDef): string {
@@ -247,7 +256,7 @@ function handlePanelFocusIn(event: FocusEvent) {
                 <span>{{ field.label }}</span>
                 <select
                   v-if="field.type === 'select'"
-                  :value="String(readFieldValue(field) ?? '')"
+                  :value="selectDisplayValue(field)"
                   @change="commitField(field, ($event.target as HTMLSelectElement).value)"
                 >
                   <option
@@ -279,7 +288,7 @@ function handlePanelFocusIn(event: FocusEvent) {
                 <input
                   v-else-if="field.type === 'color'"
                   type="color"
-                  :value="String(readFieldValue(field) || '#38bdf8')"
+                  :value="String(readFieldValue(field) || colors.primary)"
                   @change="commitField(field, ($event.target as HTMLInputElement).value)"
                 />
                 <input
@@ -335,8 +344,8 @@ function handlePanelFocusIn(event: FocusEvent) {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: #0f172a;
-  border-left: 1px solid rgba(148, 163, 184, 0.15);
+  background: var(--dp-bg-panel);
+  border-left: 1px solid var(--dp-border);
 
   &__header {
     flex: none;
@@ -345,20 +354,20 @@ function handlePanelFocusIn(event: FocusEvent) {
     h3 {
       margin: 0;
       font-size: 14px;
-      color: #e2e8f0;
+      color: var(--dp-text-primary);
     }
 
     p {
       margin: 4px 0 0;
       font-size: 11px;
-      color: #64748b;
+      color: var(--dp-text-dim);
     }
   }
 
   &__empty {
     padding: 16px;
     font-size: 13px;
-    color: #64748b;
+    color: var(--dp-text-dim);
     line-height: 1.6;
   }
 
@@ -396,13 +405,13 @@ function handlePanelFocusIn(event: FocusEvent) {
   &__title {
     margin-bottom: 10px;
     font-size: 12px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 
   &__hint {
     margin: 0 0 12px;
     font-size: 12px;
-    color: #64748b;
+    color: var(--dp-text-dim);
     line-height: 1.5;
   }
 
@@ -412,7 +421,7 @@ function handlePanelFocusIn(event: FocusEvent) {
     gap: 12px;
     margin-bottom: 8px;
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     word-break: break-all;
   }
 
@@ -422,11 +431,11 @@ function handlePanelFocusIn(event: FocusEvent) {
     gap: 8px;
     margin-bottom: 10px;
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     cursor: pointer;
 
     input {
-      accent-color: #38bdf8;
+      accent-color: var(--dp-color-primary);
     }
   }
 
@@ -436,7 +445,7 @@ function handlePanelFocusIn(event: FocusEvent) {
     gap: 6px;
     margin-bottom: 12px;
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
 
     input[type='text'],
     input[type='number'],
@@ -444,15 +453,15 @@ function handlePanelFocusIn(event: FocusEvent) {
     select,
     textarea {
       padding: 8px 10px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 1px solid var(--dp-border-strong);
       border-radius: 6px;
-      background: #020617;
-      color: #e2e8f0;
+      background: var(--dp-bg-page);
+      color: var(--dp-text-primary);
       outline: none;
       font: inherit;
 
       &:focus {
-        border-color: rgba(56, 189, 248, 0.45);
+        border-color: var(--dp-primary-a45);
       }
 
       &:disabled {
@@ -472,15 +481,15 @@ function handlePanelFocusIn(event: FocusEvent) {
     input[type='checkbox'] {
       width: 16px;
       height: 16px;
-      accent-color: #38bdf8;
+      accent-color: var(--dp-color-primary);
     }
 
     input[type='color'] {
       height: 36px;
       padding: 2px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 1px solid var(--dp-border-strong);
       border-radius: 6px;
-      background: #020617;
+      background: var(--dp-bg-page);
       cursor: pointer;
     }
   }
@@ -488,7 +497,7 @@ function handlePanelFocusIn(event: FocusEvent) {
   &__tip {
     font-style: normal;
     font-size: 11px;
-    color: #475569;
+    color: var(--dp-text-faint);
     line-height: 1.4;
   }
 }

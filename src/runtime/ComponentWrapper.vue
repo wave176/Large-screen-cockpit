@@ -87,7 +87,7 @@ function handleMouseDown(event: MouseEvent) {
     cursor: move;
 
     &:hover {
-      outline: 1px dashed rgba(56, 189, 248, 0.55);
+      outline: 1px dashed var(--dp-primary-a55);
     }
 
     // 编辑态禁止点选内部图表/文字，整体作为一个组件
@@ -98,17 +98,17 @@ function handleMouseDown(event: MouseEvent) {
   }
 
   &--selected {
-    outline: 2px solid #38bdf8;
-    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+    outline: 2px solid var(--dp-color-primary);
+    box-shadow: 0 0 0 4px var(--dp-primary-a15);
   }
 
   &--co-selected {
-    outline: 1px solid rgba(56, 189, 248, 0.55);
+    outline: 1px solid var(--dp-primary-a55);
     box-shadow: none;
   }
 
   &--highlighted {
-    outline: 1px dashed rgba(99, 226, 183, 0.75);
+    outline: 1px dashed var(--dp-success-a75);
   }
 
   &--locked {
@@ -137,9 +137,9 @@ function handleMouseDown(event: MouseEvent) {
     width: 100%;
     height: 100%;
     font-size: 12px;
-    color: #f87171;
-    border: 1px dashed #f87171;
-    background: rgba(127, 29, 29, 0.25);
+    color: var(--dp-color-danger);
+    border: 1px dashed var(--dp-color-danger);
+    background: var(--dp-danger-a25);
   }
 }
 </style>

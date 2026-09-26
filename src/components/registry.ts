@@ -28,6 +28,7 @@
 
 import type { Component } from 'vue'
 import type { ComponentMeta, DataSourceConfig } from '@/shared/types/schema'
+import { colors } from '@/shared/theme/colors'
 
 import ChartBar from '@/components/charts/ChartBar.vue'
 import ChartLine from '@/components/charts/ChartLine.vue'
@@ -46,6 +47,8 @@ import CardList from '@/components/lists/CardList.vue'
 
 import BorderBox from '@/components/decorations/BorderBox.vue'
 import DecorLine from '@/components/decorations/DecorLine.vue'
+import IconWidget from '@/components/icons/IconWidget.vue'
+import { screenIcons, type IconName } from '@/components/icons/iconDefs'
 
 import TitleBar from '@/components/layout/TitleBar.vue'
 import LegendControl from '@/components/layout/LegendControl.vue'
@@ -72,6 +75,7 @@ export const componentViews: Record<string, Component> = {
   CardList,
   BorderBox,
   DecorLine,
+  IconWidget,
   TitleBar,
   LegendControl,
   FullscreenContainer,
@@ -171,7 +175,7 @@ export const componentMetas: ComponentMeta[] = [
     label: '迷你图',
     category: 'metrics',
     defaultLayout: { x: 80, y: 120, width: 280, height: 80 },
-    defaultProps: { color: '#38bdf8' },
+    defaultProps: { color: colors.primary },
   },
 
   // —— 列表与表格 ——
@@ -210,43 +214,72 @@ export const componentMetas: ComponentMeta[] = [
     label: '科技边框',
     category: 'decorations',
     defaultLayout: { x: 80, y: 80, width: 420, height: 280 },
-    defaultProps: { title: '面板标题', variant: 1, animated: true },
+    defaultProps: { title: '面板标题', variant: 1 },
   },
   {
     type: 'BorderBox',
     label: '科技边框·绿',
     category: 'decorations',
     defaultLayout: { x: 80, y: 80, width: 420, height: 280 },
-    defaultProps: { title: '面板标题', variant: 2, animated: true },
+    defaultProps: { title: '面板标题', variant: 2 },
   },
   {
     type: 'BorderBox',
     label: '科技边框·切角',
     category: 'decorations',
     defaultLayout: { x: 80, y: 80, width: 420, height: 280 },
-    defaultProps: { title: '面板标题', variant: 3, animated: true },
+    defaultProps: { title: '面板标题', variant: 3 },
   },
   {
     type: 'DecorLine',
     label: '装饰线条',
     category: 'decorations',
     defaultLayout: { x: 80, y: 200, width: 480, height: 24 },
-    defaultProps: { mode: 'line', color: '#38bdf8' },
+    defaultProps: { mode: 'line', color: colors.primary },
   },
   {
     type: 'DecorLine',
     label: '网格背景',
     category: 'decorations',
     defaultLayout: { x: 80, y: 80, width: 480, height: 280 },
-    defaultProps: { mode: 'grid', color: '#38bdf8' },
+    defaultProps: { mode: 'grid', color: colors.primary },
   },
   {
     type: 'DecorLine',
     label: '光晕背景',
     category: 'decorations',
     defaultLayout: { x: 80, y: 80, width: 360, height: 240 },
-    defaultProps: { mode: 'glow', color: '#38bdf8' },
+    defaultProps: { mode: 'glow', color: colors.primary },
   },
+  // —— 图标 ——
+  ...(
+    [
+      'park',
+      'person',
+      'people',
+      'warning',
+      'building',
+      'camera',
+      'car',
+      'device',
+      'location',
+      'energy',
+      'shield',
+      'fire',
+      'network',
+      'server',
+    ] as IconName[]
+  ).map((icon) => ({
+    type: 'IconWidget',
+    label: screenIcons[icon].label,
+    category: 'icons' as const,
+    defaultLayout: { x: 80, y: 80, width: 120, height: 120 },
+    defaultProps: {
+      icon,
+      color: icon === 'warning' || icon === 'fire' ? colors.danger : colors.primary,
+      showBg: true,
+    },
+  })),
   {
     type: 'TitleBar',
     label: '标题栏',
@@ -283,7 +316,7 @@ export const componentMetas: ComponentMeta[] = [
     defaultProps: {
       text: '标题文本',
       fontSize: 28,
-      color: '#e0f2fe',
+      color: colors.textHighlight,
       align: 'center',
       fontWeight: 600,
     },
@@ -335,6 +368,7 @@ export const categoryLabels: Record<ComponentMeta['category'], string> = {
   metrics: '关键指标',
   lists: '列表表格',
   decorations: '视觉装饰',
+  icons: '图标',
   layout: '布局',
   infos: '信息',
   controls: '控件',
@@ -455,9 +489,9 @@ export function getDefaultDataSource(type: string, props: Record<string, unknown
         type: 'static',
         data: {
           items: [
-            { name: '在线', color: '#63e2b7' },
-            { name: '离线', color: '#64748b' },
-            { name: '告警', color: '#f87171' },
+            { name: '在线', color: colors.success },
+            { name: '离线', color: colors.textDim },
+            { name: '告警', color: colors.danger },
           ],
         },
       }

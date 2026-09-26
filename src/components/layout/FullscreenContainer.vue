@@ -29,7 +29,7 @@ const background = computed(() =>
 .fullscreen-box {
   width: 100%;
   height: 100%;
-  border: 1px dashed rgba(148, 163, 184, 0.25);
+  border: 1px dashed var(--dp-muted-a25);
   border-radius: 8px;
   position: relative;
 
@@ -38,7 +38,7 @@ const background = computed(() =>
     top: 8px;
     left: 10px;
     font-size: 11px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 }
 </style>

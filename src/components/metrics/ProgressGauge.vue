@@ -12,6 +12,7 @@ import { computed } from 'vue'
 import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
 import { getPropNumber, getPropString } from '@/shared/utils/chartData'
+import { colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 
@@ -28,7 +29,7 @@ const chartOption = computed(() => {
         text: title,
         left: 'center',
         top: 8,
-        textStyle: { color: '#94a3b8', fontSize: 13 },
+        textStyle: { color: colors.textMuted, fontSize: 13 },
       },
       series: [
         {
@@ -40,7 +41,7 @@ const chartOption = computed(() => {
           radius: '95%',
           center: ['50%', '70%'],
           progress: { show: true, width: 14 },
-          axisLine: { lineStyle: { width: 14, color: [[1, '#1e293b']] } },
+          axisLine: { lineStyle: { width: 14, color: [[1, colors.split]] } },
           pointer: { show: false },
           axisTick: { show: false },
           splitLine: { show: false },
@@ -48,7 +49,7 @@ const chartOption = computed(() => {
           detail: {
             valueAnimation: true,
             fontSize: 28,
-            color: '#38bdf8',
+            color: colors.primary,
             offsetCenter: [0, '-10%'],
             formatter: '{value}%',
           },
@@ -65,7 +66,7 @@ const chartOption = computed(() => {
       text: title,
       left: 'center',
       top: 8,
-      textStyle: { color: '#94a3b8', fontSize: 13 },
+      textStyle: { color: colors.textMuted, fontSize: 13 },
     },
     series: [
       {
@@ -80,9 +81,9 @@ const chartOption = computed(() => {
           overlap: false,
           roundCap: true,
           clip: false,
-          itemStyle: { color: '#38bdf8' },
+          itemStyle: { color: colors.primary },
         },
-        axisLine: { lineStyle: { width: 12, color: [[1, '#1e293b']] } },
+        axisLine: { lineStyle: { width: 12, color: [[1, colors.split]] } },
         pointer: { show: false },
         axisTick: { show: false },
         splitLine: { show: false },
@@ -90,7 +91,7 @@ const chartOption = computed(() => {
         detail: {
           valueAnimation: true,
           fontSize: 26,
-          color: '#e2e8f0',
+          color: colors.textPrimary,
           formatter: '{value}%',
         },
         data: [{ value }],

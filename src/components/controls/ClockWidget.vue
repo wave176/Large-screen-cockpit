@@ -52,20 +52,20 @@ onUnmounted(() => {
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: 1px dashed rgba(148, 163, 184, 0.35);
+  border: 1px dashed var(--dp-muted-a35);
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.65);
+  background: var(--dp-panel-a65);
 
   &__label {
     font-size: 12px;
-    color: #64748b;
+    color: var(--dp-text-dim);
     margin-bottom: 8px;
   }
 
   &__time {
     font-size: 24px;
     font-weight: 600;
-    color: #38bdf8;
+    color: var(--dp-color-primary);
     font-variant-numeric: tabular-nums;
   }
 }

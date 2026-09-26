@@ -34,16 +34,16 @@ const hint = computed(() => String(props.component.props.hint ?? 'Cesium 占位'
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  border: 1px solid var(--dp-primary-a25);
   border-radius: 8px;
-  background: radial-gradient(circle at 50% 30%, #1e3a5f 0%, #0f172a 55%, #020617 100%);
+  background: radial-gradient(circle at 50% 30%, var(--dp-color-map-mid) 0%, var(--dp-bg-panel) 55%, var(--dp-bg-page) 100%);
 
   &__grid {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+      linear-gradient(var(--dp-primary-a08) 1px, transparent 1px),
+      linear-gradient(90deg, var(--dp-primary-a08) 1px, transparent 1px);
     background-size: 40px 40px;
     transform: perspective(500px) rotateX(58deg) scale(1.4);
     transform-origin: center 80%;
@@ -64,12 +64,12 @@ const hint = computed(() => String(props.component.props.hint ?? 'Cesium 占位'
   &__title {
     font-size: 22px;
     font-weight: 600;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
   }
 
   &__hint {
     font-size: 14px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
   }
 
   &__badge {
@@ -77,9 +77,9 @@ const hint = computed(() => String(props.component.props.hint ?? 'Cesium 占位'
     padding: 4px 12px;
     border-radius: 999px;
     font-size: 12px;
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    background: rgba(15, 23, 42, 0.75);
+    color: var(--dp-color-primary);
+    border: 1px solid var(--dp-primary-a35);
+    background: var(--dp-panel-a75);
   }
 }
 </style>

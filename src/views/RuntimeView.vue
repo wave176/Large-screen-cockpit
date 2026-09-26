@@ -60,26 +60,26 @@ onMounted(() => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #020617;
+  background: var(--dp-bg-page);
 
   &__toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px 16px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-    background: rgba(15, 23, 42, 0.95);
+    border-bottom: 1px solid var(--dp-border);
+    background: var(--dp-panel-a95-solid);
   }
 
   &__info {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
 
     span {
       font-size: 12px;
-      color: #64748b;
+      color: var(--dp-text-dim);
     }
   }
 

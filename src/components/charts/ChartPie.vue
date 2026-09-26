@@ -9,6 +9,7 @@ import {
   getPropString,
   type NameValueItem,
 } from '@/shared/utils/chartData'
+import { chartPalette, colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 const { data: liveData } = useComponentData(() => props.component)
@@ -28,29 +29,29 @@ const chartOption = computed(() => {
 
   return {
     backgroundColor: 'transparent',
-    color: ['#38bdf8', '#63e2b7', '#fbbf24', '#a78bfa', '#f472b6'],
+    color: [...chartPalette],
     animation: true,
     title: {
       text: title,
       left: 'center',
       top: 0,
-      textStyle: { color: '#94a3b8', fontSize: 14 },
+      textStyle: { color: colors.textMuted, fontSize: 14 },
     },
     tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
-    legend: { bottom: 0, textStyle: { color: '#94a3b8' } },
+    legend: { bottom: 0, textStyle: { color: colors.textMuted } },
     series: [
       {
         type: 'pie',
         radius: ring ? ['42%', '68%'] : ['0%', '68%'],
         center: ['50%', '48%'],
         data: items,
-        label: { color: '#cbd5e1', formatter: '{b}\n{d}%' },
-        labelLine: { lineStyle: { color: '#64748b' } },
-        itemStyle: { borderColor: '#0d1b2a', borderWidth: 2 },
+        label: { color: colors.textSecondary, formatter: '{b}\n{d}%' },
+        labelLine: { lineStyle: { color: colors.textDim } },
+        itemStyle: { borderColor: colors.bgDeep, borderWidth: 2 },
         emphasis: {
           itemStyle: {
             shadowBlur: 12,
-            shadowColor: 'rgba(56, 189, 248, 0.45)',
+            shadowColor: colors.primaryA45,
           },
         },
       },

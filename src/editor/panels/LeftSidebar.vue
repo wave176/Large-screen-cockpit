@@ -24,8 +24,8 @@ import LayerPanel from '@/editor/panels/LayerPanel.vue'
 <style scoped lang="scss">
 .left-sidebar {
   height: 100%;
-  border-right: 1px solid rgba(148, 163, 184, 0.15);
-  background: #0f172a;
+  border-right: 1px solid var(--dp-border);
+  background: var(--dp-bg-panel);
 
   &__tabs {
     height: 100%;

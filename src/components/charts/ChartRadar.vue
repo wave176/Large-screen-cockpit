@@ -5,6 +5,7 @@ import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
 import { useComponentData } from '@/shared/composables/useComponentData'
 import { getPropString } from '@/shared/utils/chartData'
+import { colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 const { data: liveData } = useComponentData(() => props.component)
@@ -33,24 +34,24 @@ const chartOption = computed(() => {
 
   return {
     backgroundColor: 'transparent',
-    color: ['#38bdf8', '#63e2b7'],
+    color: [colors.primary, colors.success],
     animation: true,
     title: {
       text: title,
       left: 'center',
       top: 0,
-      textStyle: { color: '#94a3b8', fontSize: 14 },
+      textStyle: { color: colors.textMuted, fontSize: 14 },
     },
     tooltip: {},
-    legend: { bottom: 0, textStyle: { color: '#94a3b8' } },
+    legend: { bottom: 0, textStyle: { color: colors.textMuted } },
     radar: {
       indicator: indicators,
       center: ['50%', '52%'],
       radius: '58%',
-      axisName: { color: '#94a3b8' },
-      splitLine: { lineStyle: { color: '#1e293b' } },
-      splitArea: { areaStyle: { color: ['rgba(15,23,42,0.2)', 'rgba(30,41,59,0.25)'] } },
-      axisLine: { lineStyle: { color: '#334155' } },
+      axisName: { color: colors.textMuted },
+      splitLine: { lineStyle: { color: colors.split } },
+      splitArea: { areaStyle: { color: [colors.panelA20, colors.elevatedA25] } },
+      axisLine: { lineStyle: { color: colors.axis } },
     },
     series: [
       {

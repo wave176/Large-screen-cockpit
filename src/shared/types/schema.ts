@@ -138,6 +138,7 @@ export interface ComponentMeta {
     | 'metrics'
     | 'lists'
     | 'decorations'
+    | 'icons'
     | 'layout'
     | 'infos'
     | 'controls'

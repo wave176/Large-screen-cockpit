@@ -1,12 +1,10 @@
 /**
  * 全局样式约定（大屏深色主题）
  *
- * - 盒模型：全局 border-box
- * - 页面底色 #020617、正文色 #e2e8f0
- * - 字体：Inter / 系统 / 中文回退（PingFang、雅黑）
- * - 滚动条：thin + 青色半透明 thumb（Firefox scrollbar-* + WebKit 伪元素），
- *   与组件库主色 #38bdf8 一致；各组件内 overflow:auto 区域继承此约定
+ * 色值一律来自 theme.scss 的 CSS 变量（--dp-*），勿在此硬编码色值。
  */
+
+@use './theme.scss';
 
 *,
 *::before,
@@ -28,8 +26,8 @@ body {
     'PingFang SC',
     'Microsoft YaHei',
     sans-serif;
-  background: #020617;
-  color: #e2e8f0;
+  background: var(--dp-bg-page);
+  color: var(--dp-text-primary);
 }
 
 button,
@@ -41,10 +39,10 @@ code {
   font-family: Consolas, Monaco, monospace;
 }
 
-/* 全局滚动条：与大屏深色主题一致 */
+/* 全局滚动条：与大屏主色一致 */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
+  scrollbar-color: var(--dp-primary-a35) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -57,14 +55,14 @@ code {
 }
 
 *::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.28);
+  background: var(--dp-scrollbar);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: rgba(56, 189, 248, 0.5);
+  background: var(--dp-scrollbar-hover);
   border: 2px solid transparent;
   background-clip: content-box;
 }

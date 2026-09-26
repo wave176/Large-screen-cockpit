@@ -50,7 +50,7 @@ const groupedMetas = computed(() => {
   height: 100%;
   padding: 16px;
   overflow: auto;
-  background: #0f172a;
+  background: var(--dp-bg-panel);
 
   &__header {
     display: flex;
@@ -61,12 +61,12 @@ const groupedMetas = computed(() => {
     h3 {
       margin: 0;
       font-size: 14px;
-      color: #e2e8f0;
+      color: var(--dp-text-primary);
     }
 
     span {
       font-size: 12px;
-      color: #64748b;
+      color: var(--dp-text-dim);
     }
   }
 
@@ -77,7 +77,7 @@ const groupedMetas = computed(() => {
   &__category {
     margin-bottom: 8px;
     font-size: 12px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 
   &__item {
@@ -87,16 +87,16 @@ const groupedMetas = computed(() => {
     padding: 10px 12px;
     text-align: left;
     font-size: 13px;
-    color: #cbd5e1;
-    border: 1px solid rgba(148, 163, 184, 0.15);
+    color: var(--dp-text-secondary);
+    border: 1px solid var(--dp-border);
     border-radius: 8px;
-    background: rgba(15, 23, 42, 0.85);
+    background: var(--dp-panel-a85);
     cursor: pointer;
     transition: 0.2s ease;
 
     &:hover {
-      color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.35);
+      color: var(--dp-color-primary);
+      border-color: var(--dp-primary-a35);
       background: rgba(30, 41, 59, 0.95);
     }
   }

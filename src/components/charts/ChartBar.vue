@@ -12,6 +12,7 @@ import {
   getPropString,
   type CategorySeriesData,
 } from '@/shared/utils/chartData'
+import { chartPalette, colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 const { data: liveData } = useComponentData(() => props.component)
@@ -20,11 +21,8 @@ const chartOption = computed(() => {
   const data = liveData.value as CategorySeriesData
   const mode = getPropString(props.component, 'mode', 'vertical')
   const title = getPropString(props.component, 'title', '柱状图')
-  const colors = (props.component.props.color as string[] | undefined) ?? [
-    '#38bdf8',
-    '#63e2b7',
-    '#fbbf24',
-    '#a78bfa',
+  const palette = (props.component.props.color as string[] | undefined) ?? [
+    ...chartPalette.slice(0, 4),
   ]
   const categories = data.categories ?? ['A', 'B', 'C', 'D']
   const seriesList =
@@ -47,19 +45,19 @@ const chartOption = computed(() => {
 
   return {
     backgroundColor: 'transparent',
-    color: colors,
+    color: palette,
     animation: true,
     title: {
       text: title,
       left: 'center',
       top: 0,
-      textStyle: { color: '#94a3b8', fontSize: 14 },
+      textStyle: { color: colors.textMuted, fontSize: 14 },
     },
     tooltip: { trigger: 'axis' },
     legend: {
       show: seriesList.length > 1,
       top: 24,
-      textStyle: { color: '#94a3b8' },
+      textStyle: { color: colors.textMuted },
     },
     grid: { left: 48, right: 24, top: seriesList.length > 1 ? 56 : 40, bottom: 32 },
     xAxis: isHorizontal ? valueAxis : categoryAxis,

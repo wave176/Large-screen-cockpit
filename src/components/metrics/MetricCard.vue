@@ -43,25 +43,25 @@ const mom = computed(() => getPropNumber(props.component, 'mom', -3.1))
   flex-direction: column;
   justify-content: center;
   gap: 8px;
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  border: 1px solid var(--dp-primary-a25);
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.55));
+  background: linear-gradient(135deg, var(--dp-panel-a90), var(--dp-elevated-a55));
 
   &__title {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
   }
 
   &__value {
     font-size: 36px;
     font-weight: 700;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
     line-height: 1.1;
 
     small {
       margin-left: 4px;
       font-size: 14px;
-      color: #38bdf8;
+      color: var(--dp-color-primary);
     }
   }
 
@@ -71,11 +71,11 @@ const mom = computed(() => getPropNumber(props.component, 'mom', -3.1))
     font-size: 12px;
 
     .up {
-      color: #63e2b7;
+      color: var(--dp-color-success);
     }
 
     .down {
-      color: #f87171;
+      color: var(--dp-color-danger);
     }
   }
 }

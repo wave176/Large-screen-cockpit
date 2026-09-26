@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
+import { colors } from '@/shared/theme/colors'
 
 const props = defineProps<{
   component: ScreenComponent
@@ -18,7 +19,7 @@ const props = defineProps<{
 
 const text = computed(() => String(props.component.props.text ?? ''))
 const fontSize = computed(() => Number(props.component.props.fontSize ?? 24))
-const color = computed(() => String(props.component.props.color ?? '#e2e8f0'))
+const color = computed(() => String(props.component.props.color ?? colors.textPrimary))
 const align = computed(() => String(props.component.props.align ?? 'left'))
 const fontWeight = computed(() => Number(props.component.props.fontWeight ?? 500))
 </script>
@@ -45,6 +46,6 @@ const fontWeight = computed(() => Number(props.component.props.fontWeight ?? 500
   width: 100%;
   height: 100%;
   line-height: 1.2;
-  text-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+  text-shadow: 0 0 12px var(--dp-primary-a35);
 }
 </style>

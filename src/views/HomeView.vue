@@ -39,22 +39,22 @@ const router = useRouter()
   justify-content: center;
   padding: 24px;
   background:
-    radial-gradient(circle at top, rgba(56, 189, 248, 0.12), transparent 35%),
-    #020617;
+    radial-gradient(circle at top, var(--dp-primary-a12), transparent 35%),
+    var(--dp-bg-page);
 
   &__card {
     width: min(720px, 100%);
-    background: rgba(15, 23, 42, 0.92);
+    background: var(--dp-panel-a92);
 
     p {
-      color: #94a3b8;
+      color: var(--dp-text-muted);
       line-height: 1.7;
     }
 
     ul {
       margin: 16px 0 24px;
       padding-left: 20px;
-      color: #cbd5e1;
+      color: var(--dp-text-secondary);
       line-height: 1.8;
     }
   }

@@ -9,6 +9,7 @@ import {
   getPropString,
   type CategorySeriesData,
 } from '@/shared/utils/chartData'
+import { chartPalette, colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 const { data: liveData } = useComponentData(() => props.component)
@@ -24,19 +25,19 @@ const chartOption = computed(() => {
 
   return {
     backgroundColor: 'transparent',
-    color: ['#38bdf8', '#63e2b7', '#fbbf24'],
+    color: [...chartPalette.slice(0, 3)],
     animation: true,
     title: {
       text: title,
       left: 'center',
       top: 0,
-      textStyle: { color: '#94a3b8', fontSize: 14 },
+      textStyle: { color: colors.textMuted, fontSize: 14 },
     },
     tooltip: { trigger: 'axis' },
     legend: {
       show: seriesList.length > 1,
       top: 24,
-      textStyle: { color: '#94a3b8' },
+      textStyle: { color: colors.textMuted },
     },
     grid: { left: 48, right: 24, top: seriesList.length > 1 ? 56 : 40, bottom: 32 },
     xAxis: { type: 'category', data: categories, boundaryGap: false, ...darkAxis },

@@ -65,12 +65,12 @@ const rows = computed(() => {
   display: flex;
   flex-direction: column;
   padding: 10px 12px;
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--dp-primary-a20);
+  background: var(--dp-panel-a65);
 
   &__title {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     margin-bottom: 8px;
   }
 
@@ -83,9 +83,9 @@ const rows = computed(() => {
   }
 
   &__head {
-    color: #64748b;
+    color: var(--dp-text-dim);
     padding-bottom: 6px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    border-bottom: 1px solid var(--dp-border);
   }
 
   &__body {
@@ -100,16 +100,16 @@ const rows = computed(() => {
 
   &__row {
     padding: 8px 0;
-    color: #cbd5e1;
+    color: var(--dp-text-secondary);
     border-bottom: 1px dashed rgba(51, 65, 85, 0.8);
 
     .rank {
-      color: #38bdf8;
+      color: var(--dp-color-primary);
     }
 
     .value {
       text-align: right;
-      color: #63e2b7;
+      color: var(--dp-color-success);
     }
   }
 }

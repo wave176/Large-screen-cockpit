@@ -10,6 +10,7 @@
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
 import { useComponentData } from '@/shared/composables/useComponentData'
+import { colors } from '@/shared/theme/colors'
 
 interface LegendItem {
   name?: string
@@ -23,9 +24,9 @@ const items = computed(() => {
   const data = liveData.value as { items?: LegendItem[] }
   return (
     data.items ?? [
-      { name: '在线', color: '#63e2b7' },
-      { name: '离线', color: '#64748b' },
-      { name: '告警', color: '#f87171' },
+      { name: '在线', color: colors.success },
+      { name: '离线', color: colors.textDim },
+      { name: '告警', color: colors.danger },
     ]
   )
 })
@@ -55,7 +56,7 @@ const items = computed(() => {
     align-items: center;
     gap: 8px;
     font-size: 12px;
-    color: #cbd5e1;
+    color: var(--dp-text-secondary);
 
     i {
       width: 12px;

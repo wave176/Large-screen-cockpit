@@ -183,12 +183,12 @@ function getTypeLabel(type: string): string {
     h3 {
       margin: 0;
       font-size: 14px;
-      color: #e2e8f0;
+      color: var(--dp-text-primary);
     }
 
     span {
       font-size: 12px;
-      color: #64748b;
+      color: var(--dp-text-dim);
     }
   }
 
@@ -218,7 +218,7 @@ function getTypeLabel(type: string): string {
     border: 1px solid transparent;
 
     &--active {
-      border-color: rgba(56, 189, 248, 0.45);
+      border-color: var(--dp-primary-a45);
       background: rgba(30, 58, 138, 0.35);
     }
   }
@@ -233,7 +233,7 @@ function getTypeLabel(type: string): string {
 
   &__count {
     font-size: 11px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 
   &__children {
@@ -251,15 +251,15 @@ function getTypeLabel(type: string): string {
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  background: var(--dp-panel-a85);
+  border: 1px solid var(--dp-muted-a12);
 
   &--nested {
     margin-left: 18px;
   }
 
   &--active {
-    border-color: rgba(56, 189, 248, 0.45);
+    border-color: var(--dp-primary-a45);
     background: rgba(30, 58, 138, 0.28);
   }
 
@@ -270,7 +270,7 @@ function getTypeLabel(type: string): string {
   &__type {
     flex-shrink: 0;
     font-size: 11px;
-    color: #64748b;
+    color: var(--dp-text-dim);
     width: 52px;
   }
 

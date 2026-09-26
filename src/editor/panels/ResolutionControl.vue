@@ -129,7 +129,7 @@ function applyCustomResolution() {
   &__title {
     font-size: 13px;
     font-weight: 600;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
   }
 
   &__fields {
@@ -141,13 +141,13 @@ function applyCustomResolution() {
       flex-direction: column;
       gap: 6px;
       font-size: 12px;
-      color: #94a3b8;
+      color: var(--dp-text-muted);
     }
   }
 
   &__current {
     font-size: 12px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 }
 </style>

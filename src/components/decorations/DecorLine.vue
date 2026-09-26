@@ -9,11 +9,12 @@
 import { computed } from 'vue'
 import type { ScreenComponent } from '@/shared/types/schema'
 import { getPropString } from '@/shared/utils/chartData'
+import { colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 
 const mode = computed(() => getPropString(props.component, 'mode', 'line')) // line | grid | glow
-const color = computed(() => getPropString(props.component, 'color', '#38bdf8'))
+const color = computed(() => getPropString(props.component, 'color', colors.primary))
 </script>
 
 <template>
@@ -40,8 +41,8 @@ const color = computed(() => getPropString(props.component, 'color', '#38bdf8'))
 
   &--grid {
     background-image:
-      linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+      linear-gradient(var(--dp-primary-a08) 1px, transparent 1px),
+      linear-gradient(90deg, var(--dp-primary-a08) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 

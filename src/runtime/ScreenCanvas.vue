@@ -102,7 +102,7 @@ function handleCanvasClick(event: MouseEvent) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #020617;
+  background: var(--dp-bg-page);
 
   &--editor {
     align-items: flex-start;
@@ -111,7 +111,7 @@ function handleCanvasClick(event: MouseEvent) {
     background:
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      #111827;
+      var(--dp-bg-board);
     background-size: 20px 20px;
   }
 }

@@ -1,0 +1,98 @@
+/**
+ * 大屏主体配色（唯一色源）
+ *
+ * 用法：
+ * - 样式里写 var(--dp-*)
+ * - JS / ECharts / 默认 props 从 @/shared/theme/colors 取同名常量
+ *
+ * 调色时优先改本文件与 colors.ts，保持两边一致。
+ */
+
+:root {
+  /* —— 品牌 / 语义色 —— */
+  --dp-color-primary: #38bdf8;
+  --dp-color-primary-strong: #7dd3fc;
+  --dp-color-primary-bright: #67e8f9;
+  --dp-color-success: #63e2b7;
+  --dp-color-warning: #fbbf24;
+  --dp-color-danger: #f87171;
+  --dp-color-accent: #a78bfa;
+  --dp-color-accent-2: #f472b6;
+  --dp-color-map-mid: #1e3a5f;
+
+  /* —— 表面 / 背景 —— */
+  --dp-bg-page: #020617;
+  --dp-bg-panel: #0f172a;
+  --dp-bg-elevated: #1e293b;
+  --dp-bg-input: #020617;
+  --dp-bg-deep: #0d1b2a;
+  --dp-bg-board: #111827;
+
+  /* —— 文字 —— */
+  --dp-text-primary: #e2e8f0;
+  --dp-text-secondary: #cbd5e1;
+  --dp-text-muted: #94a3b8;
+  --dp-text-dim: #64748b;
+  --dp-text-faint: #475569;
+  --dp-text-highlight: #e0f2fe;
+
+  /* —— 边框 / 轴线 —— */
+  --dp-border: rgba(148, 163, 184, 0.15);
+  --dp-border-soft: rgba(148, 163, 184, 0.1);
+  --dp-border-strong: rgba(148, 163, 184, 0.2);
+  --dp-border-primary: rgba(56, 189, 248, 0.35);
+  --dp-border-primary-soft: rgba(56, 189, 248, 0.18);
+  --dp-border-primary-mid: rgba(56, 189, 248, 0.45);
+  --dp-axis: #334155;
+  --dp-split: #1e293b;
+
+  /* —— 主色透明阶 —— */
+  --dp-primary-a08: rgba(56, 189, 248, 0.08);
+  --dp-primary-a12: rgba(56, 189, 248, 0.12);
+  --dp-primary-a15: rgba(56, 189, 248, 0.15);
+  --dp-primary-a18: rgba(56, 189, 248, 0.18);
+  --dp-primary-a28: rgba(56, 189, 248, 0.28);
+  --dp-primary-a35: rgba(56, 189, 248, 0.35);
+  --dp-primary-a40: rgba(56, 189, 248, 0.4);
+  --dp-primary-a45: rgba(56, 189, 248, 0.45);
+  --dp-primary-a50: rgba(56, 189, 248, 0.5);
+  --dp-primary-a55: rgba(56, 189, 248, 0.55);
+  --dp-primary-a80: rgba(56, 189, 248, 0.8);
+
+  /* —— 中性透明阶 —— */
+  --dp-muted-a12: rgba(148, 163, 184, 0.12);
+  --dp-panel-a35: rgba(15, 23, 42, 0.35);
+  --dp-panel-a55: rgba(15, 23, 42, 0.55);
+  --dp-panel-a85: rgba(15, 23, 42, 0.85);
+  --dp-panel-a95: rgba(13, 27, 42, 0.95);
+  --dp-primary-a20: rgba(56, 189, 248, 0.2);
+  --dp-primary-a25: rgba(56, 189, 248, 0.25);
+  --dp-primary-a70: rgba(56, 189, 248, 0.7);
+  --dp-muted-a25: rgba(148, 163, 184, 0.25);
+  --dp-muted-a35: rgba(148, 163, 184, 0.35);
+  --dp-panel-a65: rgba(15, 23, 42, 0.65);
+  --dp-panel-a70: rgba(15, 23, 42, 0.7);
+  --dp-panel-a75: rgba(15, 23, 42, 0.75);
+  --dp-panel-a90: rgba(15, 23, 42, 0.9);
+  --dp-panel-a92: rgba(15, 23, 42, 0.92);
+  --dp-panel-a95-solid: rgba(15, 23, 42, 0.95);
+  --dp-elevated-a55: rgba(30, 41, 59, 0.55);
+  --dp-success-a08: rgba(99, 226, 183, 0.08);
+  --dp-success-a35: rgba(99, 226, 183, 0.35);
+  --dp-success-a75: rgba(99, 226, 183, 0.75);
+  --dp-warning-a35: rgba(251, 191, 36, 0.35);
+  --dp-danger-a25: rgba(127, 29, 29, 0.25);
+
+  /* —— 图表色板（按系列顺序） —— */
+  --dp-chart-1: var(--dp-color-primary);
+  --dp-chart-2: var(--dp-color-success);
+  --dp-chart-3: var(--dp-color-warning);
+  --dp-chart-4: var(--dp-color-accent);
+  --dp-chart-5: var(--dp-color-accent-2);
+
+  /* —— 语义别名（面板 / 编辑器） —— */
+  --dp-selection: var(--dp-color-primary);
+  --dp-focus: var(--dp-border-primary-mid);
+  --dp-scrollbar: var(--dp-primary-a28);
+  --dp-scrollbar-hover: var(--dp-primary-a50);
+}

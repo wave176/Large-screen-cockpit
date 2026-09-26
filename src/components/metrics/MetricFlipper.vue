@@ -72,7 +72,7 @@ const digits = computed(() =>
 
   &__title {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
   }
 
   &__row {
@@ -89,16 +89,16 @@ const digits = computed(() =>
     justify-content: center;
     font-size: 28px;
     font-weight: 700;
-    color: #e0f2fe;
-    background: linear-gradient(180deg, #1e293b, #0f172a);
-    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: var(--dp-text-highlight);
+    background: linear-gradient(180deg, var(--dp-bg-elevated), var(--dp-bg-panel));
+    border: 1px solid var(--dp-primary-a35);
     border-radius: 6px;
     box-shadow: inset 0 -8px 12px rgba(0, 0, 0, 0.35);
   }
 
   &__affix {
     font-size: 18px;
-    color: #38bdf8;
+    color: var(--dp-color-primary);
   }
 }
 </style>

@@ -38,10 +38,10 @@ const subtitle = computed(() => getPropString(props.component, 'subtitle', ''))
   &__line {
     flex: 1;
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7));
+    background: linear-gradient(90deg, transparent, var(--dp-primary-a70));
 
     &--right {
-      background: linear-gradient(90deg, rgba(56, 189, 248, 0.7), transparent);
+      background: linear-gradient(90deg, var(--dp-primary-a70), transparent);
     }
   }
 
@@ -52,15 +52,15 @@ const subtitle = computed(() => getPropString(props.component, 'subtitle', ''))
   &__title {
     font-size: 28px;
     font-weight: 700;
-    color: #e0f2fe;
+    color: var(--dp-text-highlight);
     letter-spacing: 0.12em;
-    text-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+    text-shadow: 0 0 16px var(--dp-primary-a35);
   }
 
   &__subtitle {
     margin-top: 4px;
     font-size: 12px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 }
 </style>

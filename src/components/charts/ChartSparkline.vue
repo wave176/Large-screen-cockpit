@@ -5,6 +5,7 @@ import ChartHost from '@/components/charts/ChartHost.vue'
 import type { ScreenComponent } from '@/shared/types/schema'
 import { useComponentData } from '@/shared/composables/useComponentData'
 import { getPropString } from '@/shared/utils/chartData'
+import { colors } from '@/shared/theme/colors'
 
 const props = defineProps<{ component: ScreenComponent }>()
 const { data: liveData } = useComponentData(() => props.component)
@@ -12,7 +13,7 @@ const { data: liveData } = useComponentData(() => props.component)
 const chartOption = computed(() => {
   const raw = liveData.value as { values?: number[] }
   const values = raw.values?.length ? raw.values : [3, 5, 4, 8, 6, 9, 7, 10, 8, 12]
-  const color = getPropString(props.component, 'color', '#38bdf8')
+  const color = getPropString(props.component, 'color', colors.primary)
 
   return {
     backgroundColor: 'transparent',
@@ -64,7 +65,7 @@ const chartOption = computed(() => {
 
   &__title {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     flex: none;
   }
 

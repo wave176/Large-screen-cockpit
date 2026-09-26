@@ -37,16 +37,16 @@ const placeholder = computed(() =>
   flex-direction: column;
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(148, 163, 184, 0.25);
+  border: 1px solid var(--dp-muted-a25);
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.75);
+  background: var(--dp-panel-a75);
   overflow: hidden;
 
   &__header {
     padding: 10px 14px;
     font-size: 13px;
-    color: #94a3b8;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    color: var(--dp-text-muted);
+    border-bottom: 1px solid var(--dp-border);
   }
 
   &__screen {
@@ -56,7 +56,7 @@ const placeholder = computed(() =>
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: #020617;
+    background: var(--dp-bg-page);
   }
 
   &__icon {
@@ -67,21 +67,21 @@ const placeholder = computed(() =>
     justify-content: center;
     border-radius: 50%;
     font-size: 18px;
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    background: rgba(56, 189, 248, 0.08);
+    color: var(--dp-color-primary);
+    border: 1px solid var(--dp-primary-a35);
+    background: var(--dp-primary-a08);
   }
 
   &__text {
     font-size: 13px;
-    color: #64748b;
+    color: var(--dp-text-dim);
     text-align: center;
     padding: 0 16px;
   }
 
   &__badge {
     font-size: 11px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 }
 </style>

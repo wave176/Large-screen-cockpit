@@ -133,7 +133,6 @@ export const componentPropSchemas: Record<string, PropFieldDef[]> = {
         { label: '切角金边', value: 3 },
       ],
     },
-    { key: 'animated', label: '扫描动画', type: 'boolean' },
   ],
 
   DecorLine: [
@@ -148,6 +147,32 @@ export const componentPropSchemas: Record<string, PropFieldDef[]> = {
       ],
     },
     { key: 'color', label: '主题色', type: 'color' },
+  ],
+
+  IconWidget: [
+    {
+      key: 'icon',
+      label: '图标',
+      type: 'select',
+      options: [
+        { label: '园区', value: 'park' },
+        { label: '人物', value: 'person' },
+        { label: '人群', value: 'people' },
+        { label: '警告', value: 'warning' },
+        { label: '建筑', value: 'building' },
+        { label: '监控', value: 'camera' },
+        { label: '车辆', value: 'car' },
+        { label: '设备', value: 'device' },
+        { label: '位置', value: 'location' },
+        { label: '能源', value: 'energy' },
+        { label: '安防', value: 'shield' },
+        { label: '消防', value: 'fire' },
+        { label: '网络', value: 'network' },
+        { label: '服务器', value: 'server' },
+      ],
+    },
+    { key: 'color', label: '颜色', type: 'color' },
+    { key: 'showBg', label: '圆形底', type: 'boolean' },
   ],
 
   TitleBar: [

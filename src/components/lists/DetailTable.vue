@@ -71,12 +71,12 @@ const rows = computed(() => {
   height: 100%;
   padding: 10px 12px;
   overflow: auto;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--dp-border-strong);
+  background: var(--dp-panel-a70);
 
   &__title {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     margin-bottom: 8px;
   }
 
@@ -90,14 +90,14 @@ const rows = computed(() => {
   }
 
   &__head {
-    color: #64748b;
+    color: var(--dp-text-dim);
     padding-bottom: 6px;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+    border-bottom: 1px solid var(--dp-border);
   }
 
   &__row {
     padding: 10px 0;
-    color: #cbd5e1;
+    color: var(--dp-text-secondary);
     border-bottom: 1px dashed rgba(51, 65, 85, 0.7);
   }
 
@@ -110,28 +110,28 @@ const rows = computed(() => {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #63e2b7;
+      background: var(--dp-color-success);
     }
 
     &.warn i {
-      background: #fbbf24;
+      background: var(--dp-color-warning);
     }
 
     &.error i {
-      background: #f87171;
+      background: var(--dp-color-danger);
     }
   }
 
   .progress {
     height: 6px;
     border-radius: 999px;
-    background: #1e293b;
+    background: var(--dp-bg-elevated);
     overflow: hidden;
 
     i {
       display: block;
       height: 100%;
-      background: linear-gradient(90deg, #38bdf8, #63e2b7);
+      background: linear-gradient(90deg, var(--dp-color-primary), var(--dp-color-success));
     }
   }
 }

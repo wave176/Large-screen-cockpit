@@ -58,7 +58,7 @@ const items = computed(() => {
 
   &__title {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     margin-bottom: 10px;
   }
 
@@ -71,28 +71,28 @@ const items = computed(() => {
   &__item {
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid rgba(56, 189, 248, 0.2);
-    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid var(--dp-primary-a20);
+    background: var(--dp-panel-a75);
   }
 
   &__name {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
   }
 
   &__value {
     margin-top: 6px;
     font-size: 22px;
     font-weight: 700;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
   }
 
   &__tag {
     margin-top: 8px;
     display: inline-block;
     font-size: 11px;
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: var(--dp-color-primary);
+    border: 1px solid var(--dp-primary-a35);
     border-radius: 999px;
     padding: 2px 8px;
   }

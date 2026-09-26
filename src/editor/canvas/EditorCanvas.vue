@@ -188,10 +188,25 @@ function handleViewportScroll() {
   updateMoveableRect()
 }
 
+function isEditableTarget(target: EventTarget | null): boolean {
+  const el = target as HTMLElement | null
+  if (!el) return false
+  const tag = el.tagName
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true
+  return Boolean(el.isContentEditable)
+}
+
 function onKeyDown(event: KeyboardEvent) {
+  if (event.code === 'Delete' || event.code === 'Backspace') {
+    if (isEditableTarget(event.target)) return
+    if (!selectedIds.value.length) return
+    event.preventDefault()
+    screenStore.removeSelected()
+    return
+  }
+
   if (event.code !== 'Space') return
-  const tag = (event.target as HTMLElement | null)?.tagName
-  if (tag === 'INPUT' || tag === 'TEXTAREA') return
+  if (isEditableTarget(event.target)) return
   event.preventDefault()
   spacePressed.value = true
 }
@@ -423,7 +438,7 @@ async function handleResizeEnd(event: MoveableResizeEndEvent) {
     background:
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      #111827;
+      var(--dp-bg-board);
     background-size: 20px 20px;
     cursor: default;
 
@@ -455,7 +470,7 @@ async function handleResizeEnd(event: MoveableResizeEndEvent) {
     position: relative;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-    outline: 1px solid rgba(148, 163, 184, 0.2);
+    outline: 1px solid var(--dp-border-strong);
   }
 
   &__moveable {
@@ -470,8 +485,8 @@ async function handleResizeEnd(event: MoveableResizeEndEvent) {
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 11px;
-    color: #94a3b8;
-    background: rgba(15, 23, 42, 0.75);
+    color: var(--dp-text-muted);
+    background: var(--dp-panel-a75);
     pointer-events: none;
   }
 }

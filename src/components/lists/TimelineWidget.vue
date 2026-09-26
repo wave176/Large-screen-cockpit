@@ -62,7 +62,7 @@ const items = computed(() => {
 
   &__title {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
     margin-bottom: 12px;
   }
 
@@ -81,8 +81,8 @@ const items = computed(() => {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #38bdf8;
-      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2);
+      background: var(--dp-color-primary);
+      box-shadow: 0 0 0 4px var(--dp-primary-a20);
       z-index: 1;
     }
 
@@ -91,7 +91,7 @@ const items = computed(() => {
       top: 12px;
       bottom: -8px;
       width: 2px;
-      background: rgba(56, 189, 248, 0.25);
+      background: var(--dp-primary-a25);
     }
   }
 
@@ -101,19 +101,19 @@ const items = computed(() => {
 
   &__time {
     font-size: 11px;
-    color: #64748b;
+    color: var(--dp-text-dim);
   }
 
   &__name {
     margin-top: 2px;
     font-size: 13px;
-    color: #e2e8f0;
+    color: var(--dp-text-primary);
   }
 
   &__desc {
     margin-top: 2px;
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--dp-text-muted);
   }
 }
 </style>

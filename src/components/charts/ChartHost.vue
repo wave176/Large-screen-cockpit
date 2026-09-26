@@ -53,8 +53,8 @@ watch(
   min-height: 0;
   padding: 4px;
   /* 不透明底，避免与下层组件叠在一起时“串图” */
-  background: rgba(13, 27, 42, 0.95);
-  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: var(--dp-panel-a95);
+  border: 1px solid var(--dp-primary-a18);
   overflow: hidden;
 
   &--plain {
