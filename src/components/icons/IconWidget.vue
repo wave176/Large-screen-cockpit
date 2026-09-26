@@ -1,63 +1,100 @@
 <!--
-  大屏图标：园区 / 人物 / 警告等常用符号，纯视觉，无 dataSource。
+  大屏图标：真实 SVG + 配置驱动（见 iconCatalog.ts / assets/icons）。
 
   Props（经 component: ScreenComponent）：
-  - props.icon: IconName
-  - props.color?: string
-  - props.showBg?: boolean  是否显示圆形底
+  - props.icon: string     对应 iconCatalog.id
+  - props.color?: string   tintable 时生效
+  - props.showBg?: boolean 圆形底
 -->
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useScreenStore } from '@/store/screen'
 import type { ScreenComponent } from '@/shared/types/schema'
-import { getIconDef } from '@/components/icons/iconDefs'
 import { colors } from '@/shared/theme/colors'
+import { getIconCatalogItem } from '@/components/icons/iconCatalog'
+import { resolveIcon, svgToDataUrl } from '@/components/icons/resolveIcon'
 
 const props = defineProps<{ component: ScreenComponent }>()
 
 const screenStore = useScreenStore()
 const { schema } = storeToRefs(screenStore)
 
-/** 从 Store 读最新 props，保证属性面板修改能立刻驱动样式 */
 const liveProps = computed(() => {
   const found = schema.value.components.find((item) => item.id === props.component.id)
   return found?.props ?? props.component.props
 })
 
-const iconName = computed(() => String(liveProps.value.icon ?? 'park'))
-const color = computed(() => String(liveProps.value.color ?? colors.primary))
+const iconId = computed(() => String(liveProps.value.icon ?? 'park'))
+const catalogItem = computed(() => getIconCatalogItem(iconId.value))
+const color = computed(() =>
+  String(liveProps.value.color ?? catalogItem.value?.defaultColor ?? colors.primary),
+)
 const showBg = computed(() => {
   const v = liveProps.value.showBg
-  if (v === undefined || v === null || v === '') return true
+  if (v === undefined || v === null || v === '') {
+    return catalogItem.value?.showBg !== false
+  }
   return Boolean(v)
 })
 
-const iconDef = computed(() => getIconDef(iconName.value))
+const resolved = computed(() => resolveIcon(iconId.value))
+const remoteSvg = ref('')
+
+async function loadRemoteSvg(url: string) {
+  remoteSvg.value = ''
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return
+    const text = await res.text()
+    if (text.includes('<svg')) remoteSvg.value = text
+  } catch {
+    remoteSvg.value = ''
+  }
+}
+
+watch(
+  () => [resolved.value?.url, resolved.value?.svg] as const,
+  ([url, svg]) => {
+    if (svg) {
+      remoteSvg.value = ''
+      return
+    }
+    if (url) void loadRemoteSvg(url)
+    else remoteSvg.value = ''
+  },
+  { immediate: true },
+)
+
+onMounted(() => {
+  if (!resolved.value?.svg && resolved.value?.url) {
+    void loadRemoteSvg(resolved.value.url)
+  }
+})
+
+/** 统一走 <img + data URL>，避免 v-html 解析 SVG 时丢掉 rect/circle */
+const imgSrc = computed(() => {
+  const r = resolved.value
+  if (!r) return ''
+  const raw = r.svg || remoteSvg.value
+  if (raw) {
+    return svgToDataUrl(raw, r.tintable ? color.value : undefined)
+  }
+  // 不可内联时退回原始 URL（多色图）
+  return r.url ?? ''
+})
 </script>
 
 <template>
   <div class="icon-widget" :style="{ '--icon-color': color }">
     <div class="icon-widget__glyph" :class="{ 'icon-widget__glyph--bg': showBg }">
-      <svg
-        class="icon-widget__svg"
-        viewBox="0 0 24 24"
-        preserveAspectRatio="xMidYMid meet"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <path
-          v-for="(d, i) in iconDef.paths"
-          :key="i"
-          :d="d"
-          stroke="currentColor"
-          stroke-width="1.75"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          :fill="iconDef.fill ? 'currentColor' : 'none'"
-        />
-      </svg>
+      <img
+        v-if="imgSrc"
+        class="icon-widget__img"
+        :src="imgSrc"
+        :alt="catalogItem?.label ?? iconId"
+        draggable="false"
+      />
     </div>
   </div>
 </template>
@@ -93,12 +130,12 @@ const iconDef = computed(() => getIconDef(iconName.value))
     }
   }
 
-  &__svg {
+  &__img {
     display: block;
     width: 54%;
     height: 54%;
-    margin: 0;
-    overflow: visible;
+    object-fit: contain;
+    object-position: center;
   }
 }
 </style>

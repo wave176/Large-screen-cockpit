@@ -262,6 +262,21 @@ watch(
   { immediate: true },
 )
 
+/** 内容自适应改宽高后，同步选中框 / Moveable */
+watch(
+  () =>
+    [
+      primarySelected.value?.layout.width,
+      primarySelected.value?.layout.height,
+      primarySelected.value?.layout.x,
+      primarySelected.value?.layout.y,
+    ] as const,
+  async () => {
+    await nextTick()
+    updateMoveableRect()
+  },
+)
+
 watch(
   () => [schema.value.canvas.width, schema.value.canvas.height, editorPreviewScale.value] as const,
   async () => {

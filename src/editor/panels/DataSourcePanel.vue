@@ -12,6 +12,7 @@ import { useScreenStore } from '@/store/screen'
 import type { DataSourceType } from '@/shared/types/schema'
 import { resolveComponentData } from '@/shared/dataSource/resolveData'
 import { DEFAULT_TRANSFORM_SCRIPT } from '@/shared/dataSource/runTransformScript'
+import { getDefaultDataSource } from '@/components/registry'
 
 const screenStore = useScreenStore()
 const { selectedComponent } = storeToRefs(screenStore)
@@ -48,7 +49,42 @@ function formatJson(value: unknown): string {
   }
 }
 
+/** 缺 dataSource 或样例为空时，用注册表默认样例补齐 */
+function ensureSampleDataSource() {
+  const comp = selectedComponent.value
+  if (!comp) return
+  const fallback = getDefaultDataSource(comp.type, comp.props)
+  if (!fallback) return
+
+  const current = comp.dataSource
+  if (!current) {
+    screenStore.updateComponentDataSource(comp.id, fallback)
+    return
+  }
+  if (current.type !== 'static') return
+
+  if (current.data === undefined || current.data === null) {
+    screenStore.updateComponentDataSource(comp.id, {
+      type: 'static',
+      data: fallback.data ?? {},
+    })
+    return
+  }
+
+  // 翻牌器：历史可能写成裸数字，规范为 { value }
+  if (
+    comp.type === 'MetricFlipper' &&
+    (typeof current.data === 'number' || typeof current.data === 'string')
+  ) {
+    screenStore.updateComponentDataSource(comp.id, {
+      type: 'static',
+      data: { value: Number(current.data) },
+    })
+  }
+}
+
 function showSamplePreview() {
+  ensureSampleDataSource()
   previewMode.value = 'sample'
   previewJson.value = formatJson(selectedComponent.value?.dataSource?.data ?? {})
   testStatus.value = ''
@@ -60,10 +96,18 @@ function patchDs(patch: Record<string, unknown>) {
 }
 
 function onTypeChange(value: string) {
-  patchDs({ type: value })
+  const comp = selectedComponent.value
+  if (!comp) return
   if (value === 'static') {
+    const fallback = getDefaultDataSource(comp.type, comp.props)
+    patchDs({
+      type: 'static',
+      data: fallback?.data ?? comp.dataSource?.data ?? {},
+    })
     showSamplePreview()
+    return
   }
+  patchDs({ type: value })
 }
 
 function commitSampleData(raw: string) {

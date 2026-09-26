@@ -7,6 +7,9 @@
  * 数据字段（categories、values 等）统一在属性面板「数据源」Tab 配置，不在此登记。
  */
 
+import { getIconSelectOptions } from '@/components/icons/iconCatalog'
+import { clockFormatOptions } from '@/components/controls/clockFormats'
+
 export type PropFieldType = 'string' | 'number' | 'boolean' | 'color' | 'select' | 'textarea' | 'json'
 
 export interface PropFieldOption {
@@ -76,9 +79,8 @@ export const componentPropSchemas: Record<string, PropFieldDef[]> = {
   ],
 
   MetricFlipper: [
-    { key: 'title', label: '标题', type: 'string' },
-    { key: 'value', label: '数值', type: 'number' },
     { key: 'digits', label: '位数', type: 'number' },
+    { key: 'fontSize', label: '字体大小', type: 'number', tip: '单位 px，默认 28；框会随字号自动缩放' },
     { key: 'prefix', label: '前缀', type: 'string' },
     { key: 'suffix', label: '后缀', type: 'string' },
   ],
@@ -87,7 +89,10 @@ export const componentPropSchemas: Record<string, PropFieldDef[]> = {
     { key: 'title', label: '标题', type: 'string' },
     { key: 'value', label: '指标值', type: 'number' },
     { key: 'unit', label: '单位', type: 'string' },
+    { key: 'fontSize', label: '字体大小', type: 'number', tip: '主数值字号，默认 36；框会随字号自动缩放' },
+    { key: 'showYoy', label: '显示同比', type: 'boolean' },
     { key: 'yoy', label: '同比 %', type: 'number' },
+    { key: 'showMom', label: '显示环比', type: 'boolean' },
     { key: 'mom', label: '环比 %', type: 'number' },
   ],
 
@@ -154,22 +159,8 @@ export const componentPropSchemas: Record<string, PropFieldDef[]> = {
       key: 'icon',
       label: '图标',
       type: 'select',
-      options: [
-        { label: '园区', value: 'park' },
-        { label: '人物', value: 'person' },
-        { label: '人群', value: 'people' },
-        { label: '警告', value: 'warning' },
-        { label: '建筑', value: 'building' },
-        { label: '监控', value: 'camera' },
-        { label: '车辆', value: 'car' },
-        { label: '设备', value: 'device' },
-        { label: '位置', value: 'location' },
-        { label: '能源', value: 'energy' },
-        { label: '安防', value: 'shield' },
-        { label: '消防', value: 'fire' },
-        { label: '网络', value: 'network' },
-        { label: '服务器', value: 'server' },
-      ],
+      tip: '选项来自 iconCatalog；新增 SVG 后在配置中登记即可',
+      options: getIconSelectOptions(),
     },
     { key: 'color', label: '颜色', type: 'color' },
     { key: 'showBg', label: '圆形底', type: 'boolean' },
@@ -188,7 +179,16 @@ export const componentPropSchemas: Record<string, PropFieldDef[]> = {
   ],
 
   ClockWidget: [
-    { key: 'format', label: '格式说明', type: 'string', tip: '当前实现为固定 YYYY-MM-DD HH:mm:ss' },
+    {
+      key: 'format',
+      label: '显示格式',
+      type: 'select',
+      options: clockFormatOptions.map((item) => ({
+        label: item.label,
+        value: item.value,
+      })),
+    },
+    { key: 'fontSize', label: '字体大小', type: 'number', tip: '单位 px，默认 24' },
   ],
 
   Map3D: [

@@ -48,7 +48,7 @@ import CardList from '@/components/lists/CardList.vue'
 import BorderBox from '@/components/decorations/BorderBox.vue'
 import DecorLine from '@/components/decorations/DecorLine.vue'
 import IconWidget from '@/components/icons/IconWidget.vue'
-import { screenIcons, type IconName } from '@/components/icons/iconDefs'
+import { iconCatalog } from '@/components/icons/iconCatalog'
 
 import TitleBar from '@/components/layout/TitleBar.vue'
 import LegendControl from '@/components/layout/LegendControl.vue'
@@ -56,6 +56,7 @@ import FullscreenContainer from '@/components/layout/FullscreenContainer.vue'
 
 import TextBlock from '@/components/infos/TextBlock.vue'
 import ClockWidget from '@/components/controls/ClockWidget.vue'
+import { DEFAULT_CLOCK_FORMAT } from '@/components/controls/clockFormats'
 import Map3D from '@/components/map3d/Map3DPlaceholder.vue'
 import VideoPanel from '@/components/video/VideoPanelPlaceholder.vue'
 
@@ -147,14 +148,23 @@ export const componentMetas: ComponentMeta[] = [
     label: '数字翻牌器',
     category: 'metrics',
     defaultLayout: { x: 80, y: 120, width: 360, height: 120 },
-    defaultProps: { title: '实时计数', value: 12860, digits: 5, prefix: '', suffix: '' },
+    defaultProps: { digits: 5, fontSize: 28, prefix: '', suffix: '' },
   },
   {
     type: 'MetricCard',
     label: '指标卡',
     category: 'metrics',
     defaultLayout: { x: 80, y: 120, width: 240, height: 140 },
-    defaultProps: { title: '关键指标', value: 86.5, unit: '%', yoy: 12.3, mom: -3.1 },
+    defaultProps: {
+      title: '关键指标',
+      value: 86.5,
+      unit: '%',
+      fontSize: 36,
+      showYoy: true,
+      showMom: true,
+      yoy: 12.3,
+      mom: -3.1,
+    },
   },
   {
     type: 'ProgressGauge',
@@ -251,33 +261,16 @@ export const componentMetas: ComponentMeta[] = [
     defaultLayout: { x: 80, y: 80, width: 360, height: 240 },
     defaultProps: { mode: 'glow', color: colors.primary },
   },
-  // —— 图标 ——
-  ...(
-    [
-      'park',
-      'person',
-      'people',
-      'warning',
-      'building',
-      'camera',
-      'car',
-      'device',
-      'location',
-      'energy',
-      'shield',
-      'fire',
-      'network',
-      'server',
-    ] as IconName[]
-  ).map((icon) => ({
+  // —— 图标（由 iconCatalog + assets/icons 配置驱动） ——
+  ...iconCatalog.map((icon) => ({
     type: 'IconWidget',
-    label: screenIcons[icon].label,
+    label: icon.label,
     category: 'icons' as const,
     defaultLayout: { x: 80, y: 80, width: 120, height: 120 },
     defaultProps: {
-      icon,
-      color: icon === 'warning' || icon === 'fire' ? colors.danger : colors.primary,
-      showBg: true,
+      icon: icon.id,
+      color: icon.defaultColor ?? colors.primary,
+      showBg: icon.showBg !== false,
     },
   })),
   {
@@ -306,7 +299,7 @@ export const componentMetas: ComponentMeta[] = [
     label: '时间显示',
     category: 'controls',
     defaultLayout: { x: 80, y: 40, width: 320, height: 72 },
-    defaultProps: { format: 'YYYY-MM-DD HH:mm:ss' },
+    defaultProps: { format: DEFAULT_CLOCK_FORMAT, fontSize: 24 },
   },
   {
     type: 'TextBlock',
@@ -437,6 +430,13 @@ export function getDefaultDataSource(type: string, props: Record<string, unknown
       }
     case 'ChartSparkline':
       return { type: 'static', data: { values: [3, 5, 4, 8, 6, 9, 7, 10, 8, 12] } }
+    case 'MetricFlipper':
+      return {
+        type: 'static',
+        data: {
+          value: Number(props.value ?? 12860),
+        },
+      }
     case 'ScrollTable':
       return {
         type: 'static',
